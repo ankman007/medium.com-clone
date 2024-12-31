@@ -1,0 +1,112 @@
+.footer {
+    background-color: black;
+    color: white;
+    padding: 40px 20px;
+}
+
+.topSection {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.logoSection, .linkSection, .socialSection {
+    flex: 1;
+    margin: 10px;
+}
+
+.subscription {
+    display: block;
+    gap: 4px;
+    margin: 15px 0;
+}
+
+.privacyText {
+    font-size: 12px;
+    color: #ccc;
+}
+
+.linkTitle{
+    font-weight: bold;
+}
+.footerLinks {
+    list-style: none;
+    padding: 0;
+}
+
+.footerLinks li {
+    margin: 8px 0;
+}
+
+.footerLinks a {
+    text-decoration: none;
+    font-size: 12px;
+    color: #ccc;
+}
+
+.footerLinks a:hover {
+    text-decoration: underline;
+}
+
+.socialIcons {
+    list-style: none;
+    padding: 0;
+}
+
+.socialIcons li {
+    margin: 0 10px;
+}
+
+.socialIcons a {
+    color: white;
+    font-size: 12px;
+    display: flex;
+    margin: 12px 0;
+}
+
+.socialIcons li a p {
+    font-size: 12px;
+    margin-left: 5px;
+    color: #ccc;
+}
+
+.faIcon {
+    width: 12px;
+}
+
+.socialIcons a:hover {
+    text-decoration: underline;
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid #129490;
+    margin: 20px 0;
+}
+
+.bottomSection {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.bottomSection p {
+    margin: 0 10px;
+}
+
+.policyLinks {
+    list-style: none;
+    padding: 0;
+    display: flex;
+}
+
+.policyLinks li {
+    margin: 0 15px;
+}
+
+.policyLinks a {
+    font-size: 12px;
+    color: #ccc;
+    text-decoration: underline;
+}

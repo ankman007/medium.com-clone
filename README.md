@@ -2,7 +2,7 @@
 
 Web content management system that allows for hassle-free way to publish and manage content.
 
-## Standard Followed During Development 
+# Standard followed during development 
 
 - Use types over interfaces
 - Maintain and use tailwind global styling

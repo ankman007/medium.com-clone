@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %} 
+        {% endblock %}
+    </title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        header{
+            width: 100%;
+            height: 8vh;
+            background-color: beige;
+            padding: 20px;
+            display: block;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .navbar{
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 10px;
+        }
+        .navbar li{
+            list-style: none;
+        }
+        .navbar li a{
+            text-decoration: none;
+            font-size: 20px;
+            color: black;
+        }
+        footer{
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background-color: beige;
+            width: 100%;
+            height: 5vh;
+            padding: 20px;
+            font-size: 20px;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <ul class="navbar">
+            <li><a href="/home">Home</a></li>
+            <li><a href="/about-us">About Us</a></li>
+            <li><a href="/contact-us">Contact Us</a></li>
+            <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+    </header>
+    
+    {% block content %}
+
+    {% endblock %}
+
+    <footer>
+        Copyright @ankman 2025
+    </footer>
+</body>
+</html>

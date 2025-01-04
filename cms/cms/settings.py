@@ -1,5 +1,15 @@
 
 from pathlib import Path
+import os 
+from dotenv import load_dotenv
+
+load_dotenv()
+
+DB_NAME = os.environ.get('RDS_DB_NAME')
+DB_USERNAME = os.environ.get('RDS_USERNAME')
+DB_PASSWORD = os.environ.get('RDS_PASSWORD')
+DB_HOST = os.environ.get('RDS_HOST')
+DB_PORT = os.environ.get('PORT')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -18,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',  
 ]
 
 MIDDLEWARE = [
@@ -56,11 +67,19 @@ WSGI_APPLICATION = 'cms.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': DB_NAME,
+        'USER': DB_NAME,
+        'PASSWORD': DB_PASSWORD,
+        'HOST': DB_HOST,
+        'PORT': DB_PORT,
+        'OPTIONS': {
+            'connect_timeout': 5
+        }
     }
 }
 
+print("DB connection details: ", DATABASES)
 
 AUTH_PASSWORD_VALIDATORS = [
     {

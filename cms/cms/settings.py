@@ -1,39 +1,55 @@
 
 from pathlib import Path
-import os 
-from dotenv import load_dotenv
-
-load_dotenv()
-
-DB_NAME = os.environ.get('RDS_DB_NAME')
-DB_USERNAME = os.environ.get('RDS_USERNAME')
-DB_PASSWORD = os.environ.get('RDS_PASSWORD')
-DB_HOST = os.environ.get('RDS_HOST')
-DB_PORT = os.environ.get('PORT')
+from os import getenv, path 
+from django.core.management.utils import get_random_secret_key
+import dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+dotenv_file = BASE_DIR / '.env.local'
 
-SECRET_KEY = 'django-insecure-+-hvx%h-38%i+mjoj8s@z#_=3)@zgxeqmgvvx*2-ibdpomz2xr'
+if path.isfile(dotenv_file):
+    dotenv.load_dotenv(dotenv_file)
+    
+SECRET_KEY = getenv('DJANGO_SECRET_KEY', get_random_secret_key())
+DEBUG = getenv('DEBUG', 'False') == 'True'
 
-DEBUG = True
+ALLOWED_HOSTS = getenv(
+    'DJANGO_ALLOWED_HOSTS',
+    '127.0.0.1,localhost'
+).split(',')
 
-ALLOWED_HOSTS = []
+DB_NAME = getenv('DB_NAME')
+DB_USERNAME = getenv('DB_USERNAME')
+DB_PASSWORD = getenv('PASSWORD')
+DB_HOST = getenv('HOST')
+DB_PORT = getenv('PORT')
 
 INSTALLED_APPS = [
-    'users',
-    'content',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',  
+    'rest_framework_simplejwt',
+    'account',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    # 'DEFAULT_RENDERER_CLASSES': ('rest_framework.renderers.JSONRenderer', ) 
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -69,7 +85,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': DB_NAME,
-        'USER': DB_NAME,
+        'USER': DB_USERNAME,
         'PASSWORD': DB_PASSWORD,
         'HOST': DB_HOST,
         'PORT': DB_PORT,
@@ -107,3 +123,35 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'account.User'
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
+
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "token_type",
+    "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
+
+    "JTI_CLAIM": "jti",
+}
+
+CORS_ALLOWED_ORIGINS = [
+    "https://devflow.com",
+    "https://sub.example.com",
+    "http://localhost:8080",
+    "http://localhost:3000",
+    "http://127.0.0.1:9000",
+    "http://127.0.0.1:3000",
+]
+
+APPEND_SLASH = True

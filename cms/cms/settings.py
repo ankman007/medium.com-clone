@@ -3,6 +3,8 @@ from pathlib import Path
 from os import getenv, path 
 from django.core.management.utils import get_random_secret_key
 import dotenv
+from datetime import timedelta
+import os 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 dotenv_file = BASE_DIR / '.env.local'
@@ -24,6 +26,10 @@ DB_PASSWORD = getenv('PASSWORD')
 DB_HOST = getenv('HOST')
 DB_PORT = getenv('PORT')
 
+EMAIL_USER = getenv('EMAIL_USER')
+EMAIL_PASSWORD = getenv('EMAIL_PASSWORD')
+EMAIL_FROM = getenv('EMAIL_FROM')
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -35,6 +41,8 @@ INSTALLED_APPS = [
     'rest_framework',  
     'rest_framework_simplejwt',
     'account',
+    'blog',
+    'engagement',
 ]
 
 REST_FRAMEWORK = {
@@ -43,7 +51,6 @@ REST_FRAMEWORK = {
     ),
     # 'DEFAULT_RENDERER_CLASSES': ('rest_framework.renderers.JSONRenderer', ) 
 }
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -58,8 +65,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'cms.urls'
-
-import os 
 
 TEMPLATES = [
     {
@@ -79,7 +84,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'cms.wsgi.application'
-
 
 DATABASES = {
     'default': {
@@ -126,7 +130,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'account.User'
 
-from datetime import timedelta
+EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smpt.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
@@ -154,4 +161,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
 ]
 
-APPEND_SLASH = True
+APPEND_SLASH=True
+
+PASSWORD_RESET_TIMEOUT=900

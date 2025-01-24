@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from account.serializers import SendPasswordResetEmailSerializer, UserLoginSerializer, UserPasswordResetSerializer, UserProfileSerializer, UserRegistrationSerializer, UserChangePasswordSerializer
 from django.contrib.auth import authenticate
-from account.renderers import UserRenderer
+from account.renderers import UserRenderer 
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 
@@ -37,7 +37,7 @@ class UserLoginView(APIView):
     def post(self, request, format=None):
         serializer = UserLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        email = serializer.validated_data.get('email')
+        email = serializer.validated_data.get('email') 
         password = serializer.validated_data.get('password')
         user = authenticate(request, email=email, password=password)
 

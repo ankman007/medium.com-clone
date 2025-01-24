@@ -28,7 +28,7 @@ class UserManager(BaseUserManager):
             email,
             password=password,
             name=name,
-            tc=tc,
+            tc=tc, 
         )
         user.is_admin = True
         user.save(using=self._db)

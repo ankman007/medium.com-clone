@@ -46,6 +46,7 @@ export default function Home() {
         <div className="flex-grow space-y-6">
           <PostCard
             author="John Doe"
+            authorImage="/dummy-profile-2.jpg"
             title="Building a Modern Web Application"
             description="Learn how to create a modern web application using React and Tailwind CSS."
             image="/thumbnail-1.jpg"
@@ -58,6 +59,7 @@ export default function Home() {
 
           <PostCard
             author="Jane Smith"
+            authorImage="/dummy-profile-1.jpg"
             title="SEO Best Practices for 2025"
             description="Discover the latest SEO trends and best practices to rank higher in search engines."
             image="/thumbnail-2.jpg"
@@ -70,6 +72,7 @@ export default function Home() {
 
           <PostCard
             author="John Doe"
+            authorImage="/dummy-profile-3.jpg"
             title="Building a Modern Web Application"
             description="Learn how to create a modern web application using React and Tailwind CSS."
             image="/thumbnail-3.jpg"
@@ -82,6 +85,7 @@ export default function Home() {
 
           <PostCard
             author="Jane Smith"
+            authorImage="/dummy-profile-4.jpg"
             title="SEO Best Practices for 2025"
             description="Discover the latest SEO trends and best practices to rank higher in search engines."
             image="/thumbnail-4.jpg"

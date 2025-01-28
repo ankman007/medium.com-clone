@@ -36,7 +36,6 @@ const PostPage: React.FC<PostPageProps> = ({
 }) => {
   return (
     <div className="bg-white max-w-3xl mx-auto p-6">
-      {/* Article Thumbnail */}
       <div className="relative w-full h-96 mb-6">
         <Image
           src={thumbnail}
@@ -47,13 +46,10 @@ const PostPage: React.FC<PostPageProps> = ({
         />
       </div>
 
-      {/* Post Title */}
       <h1 className="text-4xl font-bold text-gray-900 mb-4">{title}</h1>
 
-      {/* SEO Description */}
       <p className="text-lg text-gray-600 mb-6">{seoDescription}</p>
 
-      {/* Author Details */}
       <div className="flex items-center space-x-6 mb-6">
         <div className="relative w-12 h-12">
           <Image
@@ -74,7 +70,6 @@ const PostPage: React.FC<PostPageProps> = ({
         </div>
       </div>
 
-      {/* Engagement Section */}
       <div className="flex items-center space-x-6 mb-6">
         
         <div className="flex items-center space-x-2 cursor-pointer">
@@ -90,10 +85,9 @@ const PostPage: React.FC<PostPageProps> = ({
         </div>
       </div>
 
-      {/* Post Content */}
       <div
         className="text-gray-800 text-lg leading-relaxed space-y-6"
-        dangerouslySetInnerHTML={{ __html: content }} // Handle the article content (HTML or markdown)
+        dangerouslySetInnerHTML={{ __html: content }}
           />
           
       </div>

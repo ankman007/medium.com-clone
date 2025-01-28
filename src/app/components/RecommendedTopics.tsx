@@ -11,10 +11,8 @@ interface RecommendedTopicsProps {
 const RecommendedTopics: React.FC<RecommendedTopicsProps> = ({ topics }) => {
   return (
     <div className="bg-white rounded-lg p-4">
-      {/* Title */}
       <h2 className="text-lg font-bold text-gray-900 mb-4">Recommended Topics</h2>
 
-      {/* List of Topic Bubbles */}
       <div className="flex flex-wrap gap-3 mb-4">
         {topics.map((topic, index) => (
           <div
@@ -24,13 +22,6 @@ const RecommendedTopics: React.FC<RecommendedTopicsProps> = ({ topics }) => {
             {topic.name}
           </div>
         ))}
-      </div>
-
-      {/* See More Topics Link */}
-      <div className="mt-4">
-        <a href="#" className="text-blue-500 hover:underline text-sm">
-          See more topics
-        </a>
       </div>
     </div>
   );

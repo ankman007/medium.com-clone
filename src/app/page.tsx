@@ -1,5 +1,4 @@
 import PostCard from "./components/PostCard";
-import Navbar from "./components/Navbar";
 import RecommendedPostsSection from "./components/RecommendedPostsSection";
 import RecommendedTopics from "./components/RecommendedTopics";
 
@@ -36,13 +35,7 @@ export default function Home() {
 
   return (
     <div>
-      {/* Navbar */}
-      <Navbar />
-      <hr />
-
-      {/* Main Container for Content */}
       <div className="flex flex-col lg:flex-row px-4 lg:px-8 py-8 gap-8">
-        {/* Main Post Cards Section */}
         <div className="flex-grow space-y-6">
           <PostCard
             author="John Doe"
@@ -98,11 +91,9 @@ export default function Home() {
           <hr />
         </div>
 
-        {/* Sidebar Section */}
         <div className="w-full lg:w-1/3 space-y-8">
           <RecommendedPostsSection articles={RecommendedPostsSectionArticles} />
 
-          {/* Recommended Topics Section */}
           <RecommendedTopics topics={recommendedTopics} />
         </div>
       </div>

@@ -21,14 +21,11 @@ const Navbar = () => {
 
   return (
     <nav className="w-full bg-white py-2 px-4 flex justify-between items-center">
-      {/* Left section - Logo and Search */}
       <div className="flex items-center space-x-6">
-        {/* Logo */}
         <div className="text-2xl font-bold text-gray-800 cursor-pointer">
           Medium
         </div>
 
-        {/* Search */}
         <div className="relative">
           <input
             type="text"
@@ -38,20 +35,16 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Right section - Write, Notifications, Profile */}
       <div className="flex items-center space-x-6">
-        {/* Write button */}
         <button className="flex items-center space-x-2 bg-black text-white rounded-full py-2 px-4 hover:bg-gray-800">
           <FontAwesomeIcon icon={faPen} />
           <span>Write</span>
         </button>
 
-        {/* Notifications Icon */}
         <div className="relative cursor-pointer">
           <FontAwesomeIcon icon={faBell} className="text-gray-600" />
         </div>
 
-        {/* Profile Section */}
         <div className="relative">
           <Image
             src="/dummy-profile-1.jpg"
@@ -62,7 +55,6 @@ const Navbar = () => {
             onClick={toggleDropdown}
           />
 
-          {/* Dropdown Menu */}
           {isDropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg py-2">
               <a

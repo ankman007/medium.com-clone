@@ -29,10 +29,8 @@ const PostCard: React.FC<PostCardProps> = ({
   return (
     <div className="bg-white border rounded-lg p-4 mb-6">
       <div className="flex flex-col md:flex-row">
-        {/* Left Section - Post Details */}
         <div className="flex flex-col justify-between flex-1">
           <div className="flex items-center space-x-3">
-            {/* Author Profile Picture */}
             <Image
               src={authorImage}
               alt={author}
@@ -46,26 +44,21 @@ const PostCard: React.FC<PostCardProps> = ({
           <h2 className="text-xl font-bold text-gray-900 mt-2">{title}</h2>
           <p className="text-gray-700 text-sm line-clamp-3">{description}</p>
 
-          {/* Post Engagement Section */}
           <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
-            {/* Left section - Date, Likes, Comments */}
             <div className="flex items-center space-x-4">
               <span>{updatedAt}</span>
 
-              {/* Likes */}
               <div className="flex items-center space-x-1 cursor-pointer">
                 <FontAwesomeIcon icon={faHeart} className="text-red-500" />
                 <span>{likes}</span>
               </div>
 
-              {/* Comments */}
               <div className="flex items-center space-x-1 cursor-pointer">
                 <FontAwesomeIcon icon={faCommentAlt} className="text-gray-500" />
                 <span>{comments}</span>
               </div>
             </div>
 
-            {/* Right section - Bookmark, Report */}
             <div className="flex items-center space-x-4">
               <div className="cursor-pointer">
                 <FontAwesomeIcon icon={faBookmark} className={isBookmarked ? "text-yellow-500" : "text-gray-500"} />
@@ -77,7 +70,6 @@ const PostCard: React.FC<PostCardProps> = ({
           </div>
         </div>
 
-        {/* Right Section - Larger Post Image */}
         {image && (
           <div className="w-full md:w-48 h-48 ml-0 md:ml-6 mt-4 md:mt-0 flex-shrink-0 relative">
             <Image

@@ -8,15 +8,15 @@ interface Article {
   uploadedAt: string;
 }
 
-interface EditorsPickProps {
+interface RecommendedPostsSectionProps {
   articles: Article[];
 }
 
-const EditorsPick: React.FC<EditorsPickProps> = ({ articles }) => {
+const RecommendedPostsSection: React.FC<RecommendedPostsSectionProps> = ({ articles }) => {
   return (
     <div className="bg-white rounded-lg p-4">
       {/* Title */}
-      <h2 className="text-lg font-bold text-gray-900 mb-4">Staff Picks</h2>
+      <h2 className="text-lg font-bold text-gray-900 mb-4">Recommended Posts</h2>
 
       {/* List of Articles */}
       <div className="space-y-6">
@@ -46,13 +46,13 @@ const EditorsPick: React.FC<EditorsPickProps> = ({ articles }) => {
       </div>
 
       {/* See Full List Link */}
-      <div className="mt-4">
+      {/* <div className="mt-4">
         <a href="#" className="text-blue-500 hover:underline text-sm">
           See full list
         </a>
-      </div>
+      </div> */}
     </div>
   );
 };
 
-export default EditorsPick;
+export default RecommendedPostsSection;

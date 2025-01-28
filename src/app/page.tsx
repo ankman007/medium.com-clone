@@ -1,10 +1,10 @@
 import PostCard from "./components/PostCard";
 import Navbar from "./components/Navbar";
-import EditorsPick from "./components/EditorsPick";
+import RecommendedPostsSection from "./components/RecommendedPostsSection";
 import RecommendedTopics from "./components/RecommendedTopics";
 
 export default function Home() {
-  const editorsPickArticles = [
+  const RecommendedPostsSectionArticles = [
     {
       authorName: "John Doe",
       authorProfileImage: "/dummy-profile-2.jpg",
@@ -100,8 +100,7 @@ export default function Home() {
 
         {/* Sidebar Section */}
         <div className="w-full lg:w-1/3 space-y-8">
-          {/* Editors Pick Section */}
-          <EditorsPick articles={editorsPickArticles} />
+          <RecommendedPostsSection articles={RecommendedPostsSectionArticles} />
 
           {/* Recommended Topics Section */}
           <RecommendedTopics topics={recommendedTopics} />

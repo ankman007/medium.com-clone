@@ -6,14 +6,12 @@ from django.contrib.auth import authenticate
 from account.renderers import UserRenderer 
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
-
 from rest_framework.permissions import BasePermission
-
+    
 class IsAdminUser(BasePermission):
     def has_permission(self, request, view):
         return request.user and request.user.is_authenticated and request.user.role == 'admin'
-
-# Generate token manually
+    
 class TokenRefreshView():
     def get_tokens_for_user(user):
         refresh = RefreshToken.for_user(user)

@@ -6,19 +6,6 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import ArticleSerializer, CommentSerializer, LikeSerializer, TagSerializer
 from .models import Article, Comment, Like, Tag
 from loguru import logger
-
-class ApiOverview(APIView):
-    def get(self, request):
-        api_urls = {
-            'API Overview': '/',
-            'List Articles': '/articles/',
-            'Create Article': '/articles/create/',
-            'Article Details': '/articles/<int:id>/',
-            'Update Article': '/articles/<int:id>/update/',
-            'Delete Article': '/articles/<int:id>/delete/',
-        }
-        return Response(api_urls)
-
 class ArticleListView(APIView):
     def get(self, request):
         try:
@@ -37,23 +24,31 @@ class ArticleDetail(APIView):
             serializer = ArticleSerializer(article)
             response_data = serializer.data
             
-            response_data['likes_count'] = article.likes.count()
-            response_data['comments_count'] = article.comments.count()  # Fixed wrong count logic
+            response_data['like_count'] = Like.objects.filter(article=article).count()
+            response_data['comments_count'] = article.comments.count()  
             
             return Response(response_data, status=status.HTTP_200_OK)
         except Exception as e:
             logger.error(f"Error fetching article details for ID {id}: {e}")
             return Response({"error": "Error fetching article details"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 class CreateArticleView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
         try:
+            request.data['author'] = request.user.id  
             serializer = ArticleSerializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save()
+            
+            if serializer.is_valid(raise_exception=True):
+                article = serializer.save(author=request.user)  
+
+                tags_data = request.data.get('tags', [])
+                if tags_data:
+                    tags = Tag.objects.filter(id__in=tags_data)
+                    article.tags.set(tags)
+                    article.save()
+
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 logger.warning(f"Validation error: {serializer.errors}")
@@ -156,3 +151,21 @@ class AddTagsToArticleView(APIView):
         except Exception as e:
             logger.error(f"Error adding tags to article ID {article_id}: {e}")
             return Response({"error": "Error adding tags"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class CreateTagView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            tag_name = request.data.get('name')
+            
+            if not tag_name:
+                return Response({"error": "Tag name is required"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            tag, created = Tag.objects.get_or_create(name=tag_name)
+            serializer = TagSerializer(tag)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            logger.error(f"Error creating tag: {e}")
+            return Response({"error": "Error creating tag"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

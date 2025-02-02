@@ -1,3 +1,4 @@
+'use client';
 import React from "react";
 import Image from "next/image";
 
@@ -14,6 +15,7 @@ interface RecommendedPostsSectionProps {
 
 const RecommendedPostsSection: React.FC<RecommendedPostsSectionProps> = ({ articles }) => {
   return (
+    <>
     <div className="bg-white rounded-lg p-4">
       <h2 className="text-lg font-bold text-gray-900 mb-4">Recommended Posts</h2>
 
@@ -38,9 +40,9 @@ const RecommendedPostsSection: React.FC<RecommendedPostsSectionProps> = ({ artic
             <span className="text-xs text-gray-500">{article.uploadedAt}</span>
           </div>
         ))}
-      </div>
-
-     
+        </div>
+    </div>
+    </>
   );
 };
 

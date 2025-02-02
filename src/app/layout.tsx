@@ -1,24 +1,20 @@
-import type { Metadata } from "next";
-import Navbar from "./components/Navbar";
-import "./globals.css"; 
+import { ReactNode } from 'react';
+import { Provider } from 'react-redux';
+import './globals.css';
+import store from './redux/store';
 
-export const metadata: Metadata = {
-  title: "DevFlow",
-  description: "Web content management system that allows for hassle-free way to publish and manage content.",
+export const metadata = {
+  title: 'DevFlow',
+  description: 'Web content management system that allows for hassle-free way to publish and manage content.',
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body
-        className={`antialiased`}
-      >
-        <Navbar />
-        {children}
+      <body>
+        <Provider store={store}>
+          {children}
+        </Provider>
       </body>
     </html>
   );

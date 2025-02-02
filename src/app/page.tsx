@@ -1,3 +1,4 @@
+'use client';
 import PostCard from "./components/PostCard";
 import RecommendedPostsSection from "./components/RecommendedPostsSection";
 import RecommendedTopics from "./components/RecommendedTopics";

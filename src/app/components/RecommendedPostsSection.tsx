@@ -38,9 +38,8 @@ const RecommendedPostsSection: React.FC<RecommendedPostsSectionProps> = ({ artic
             <span className="text-xs text-gray-500">{article.uploadedAt}</span>
           </div>
         ))}
-      </div>
-
-     
+    </div>
+    </div>
   );
 };
 

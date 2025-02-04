@@ -23,9 +23,8 @@ const Navbar = () => {
     <nav className="w-full bg-white py-2 px-4 flex justify-between items-center">
       <div className="flex items-center space-x-6">
         <div className="text-2xl font-bold text-gray-800 cursor-pointer">
-          Medium
+          DevFlow
         </div>
-
         <div className="relative">
           <input
             type="text"

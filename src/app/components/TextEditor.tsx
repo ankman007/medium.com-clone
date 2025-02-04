@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 import { EditorState, convertToRaw } from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
-// Dynamically import Editor to prevent SSR issues
 const Editor = dynamic(() => import("react-draft-wysiwyg").then((mod) => mod.Editor), { ssr: false });
 
 const RichTextEditor: React.FC = () => {
@@ -16,7 +15,6 @@ const RichTextEditor: React.FC = () => {
   const [wordCount, setWordCount] = useState(0);
   const [charCount, setCharCount] = useState(0);
 
-  // Handle editor state change
   const onEditorStateChange = (newState: EditorState) => {
     setEditorState(newState);
     const content = newState.getCurrentContent().getPlainText();
@@ -24,7 +22,6 @@ const RichTextEditor: React.FC = () => {
     setCharCount(content.length);
   };
 
-  // Autosave draft every 10 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       saveDraft();
@@ -32,19 +29,16 @@ const RichTextEditor: React.FC = () => {
     return () => clearInterval(interval);
   }, [editorState, title, description]);
 
-  // Save draft to localStorage or API
   const saveDraft = () => {
     const rawContent = convertToRaw(editorState.getCurrentContent());
     const blogData = { title, description, content: JSON.stringify(rawContent) };
-    console.log("Draft Saved:", blogData);
-    localStorage.setItem("draft", JSON.stringify(blogData)); // Simulate backend save
+    alert("Draft Saved:", blogData);
+    localStorage.setItem("draft", JSON.stringify(blogData));
   };
 
-  // Publish Blog (Send to Backend)
   const publishBlog = () => {
     saveDraft();
-    console.log("Blog Published!");
-    // Send blogData to FastAPI
+    alert("Blog Published!");
   };
 
   return (

@@ -2,18 +2,37 @@
 
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { EditorState, convertToRaw } from "draft-js";
+import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 const Editor = dynamic(() => import("react-draft-wysiwyg").then((mod) => mod.Editor), { ssr: false });
 
 const RichTextEditor: React.FC = () => {
   const [title, setTitle] = useState("");
-  const [description] = useState("");
+  const [description, setDescription] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [previewMode, setPreviewMode] = useState(false);
   const [wordCount, setWordCount] = useState(0);
   const [charCount, setCharCount] = useState(0);
+
+  useEffect(() => {
+    const storedDraft = localStorage.getItem("draft");
+    if (storedDraft) {
+      const parsedDraft = JSON.parse(storedDraft);
+      setTitle(parsedDraft.title || "");
+      setDescription(parsedDraft.description || "");
+      if (parsedDraft.content) {
+        try {
+          const contentState = convertFromRaw(JSON.parse(parsedDraft.content));
+          setEditorState(EditorState.createWithContent(contentState));
+        } catch (error) {
+          console.error("Error parsing content:", error);
+          setEditorState(EditorState.createEmpty());
+        }
+      }
+    }
+  }, []);
+
 
   const onEditorStateChange = (newState: EditorState) => {
     setEditorState(newState);
@@ -23,23 +42,28 @@ const RichTextEditor: React.FC = () => {
   };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      saveDraft();
-    }, 10000);
+    const saveDraft = () => {
+      const rawContent = convertToRaw(editorState.getCurrentContent());
+      const blogData = { title, description, content: JSON.stringify(rawContent) };
+      localStorage.setItem("draft", JSON.stringify(blogData));
+    };
+
+    const interval = setInterval(saveDraft, 10000);
     return () => clearInterval(interval);
   }, [editorState, title, description]);
 
   const saveDraft = () => {
     const rawContent = convertToRaw(editorState.getCurrentContent());
     const blogData = { title, description, content: JSON.stringify(rawContent) };
-    alert("Draft Saved:", blogData);
     localStorage.setItem("draft", JSON.stringify(blogData));
+    console.log("Draft Saved:", blogData);
   };
 
   const publishBlog = () => {
     saveDraft();
     alert("Blog Published!");
   };
+
 
   return (
     <div className="editor-container">
@@ -77,7 +101,7 @@ const RichTextEditor: React.FC = () => {
             list: { options: ["unordered", "ordered"] },
             textAlign: { options: ["left", "center", "right", "justify"] },
             image: {
-              uploadCallback: (file) =>
+              uploadCallback: (file: Blob) =>
                 new Promise((resolve) => {
                   const reader = new FileReader();
                   reader.onloadend = () => resolve({ data: { link: reader.result } });

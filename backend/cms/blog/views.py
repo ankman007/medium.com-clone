@@ -3,9 +3,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from .serializers import ArticleSerializer, CommentSerializer, LikeSerializer, TagSerializer
+from .serializers import ArticleSerializer, CommentSerializer, ImageSerializer, LikeSerializer, TagSerializer
 from .models import Article, Comment, Like, Tag
 from loguru import logger
+from rest_framework.parsers import MultiPartParser, FormParser
+from django.conf import settings
+
 class ArticleListView(APIView):
     def get(self, request):
         try:
@@ -169,3 +172,44 @@ class CreateTagView(APIView):
         except Exception as e:
             logger.error(f"Error creating tag: {e}")
             return Response({"error": "Error creating tag"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+class GetPostsByUserView(APIView):
+    def get(self, request, username):
+        try:
+            user = get_object_or_404(settings.AUTH_USER_MODEL, username=username)
+            articles = Article.objects.filter(author=user)
+            serializer = ArticleSerializer(articles, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"Error fetching articles by user {username}: {e}")
+            return Response({"error": "Error fetching articles by user"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class GetPostsByTagView(APIView):
+    def get(self, request, tag_name):
+        try:
+            tag = get_object_or_404(Tag, name=tag_name)
+            articles = Article.objects.filter(tags=tag)
+            serializer = ArticleSerializer(articles, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"Error fetching articles for tag {tag_name}: {e}")
+            return Response({"error": "Error fetching articles by tag"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class UploadImageView(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request):
+        try:
+            request.data['uploaded_by'] = request.user.id
+            serializer = ImageSerializer(data=request.data)
+
+            if serializer.is_valid():
+                serializer.save(uploaded_by=request.user)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.error(f"Error uploading image: {e}")
+            return Response({"error": "Error uploading image"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -8,7 +8,7 @@ class Article(models.Model):
     content = models.TextField()
     seo_description = models.CharField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True) 
     seo_slug = models.CharField(max_length=255)
     tags = models.ManyToManyField('Tag', related_name='articles')
 
@@ -44,3 +44,11 @@ class Tag(models.Model):
     
     def __str__(self):
         return self.name
+    
+class Image(models.Model):
+    image = models.ImageField(upload_to='images/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Image uploaded by {self.uploaded_by}"

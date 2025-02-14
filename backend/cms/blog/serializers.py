@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from .models import Article, Comment, Like, Tag
+from .models import Image
 
-class ArticleSerializer(serializers.ModelSerializer):
+class ArticleSerializer(serializers.ModelSerializer): 
     author = serializers.StringRelatedField(read_only=True)  
     seo_slug = serializers.ReadOnlyField()  
     tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)  
@@ -32,3 +33,11 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag 
         fields = ['id', 'name']
+        
+class ImageSerializer(serializers.ModelSerializer):
+    uploaded_by = serializers.StringRelatedField(read_only=True)
+
+    class Meta:
+        model = Image
+        fields = ['id', 'image', 'uploaded_at', 'uploaded_by']
+        read_only_fields = ['uploaded_at']

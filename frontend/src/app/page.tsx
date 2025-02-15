@@ -1,96 +1,70 @@
 'use client';
-import PostCard from "./components/PostCard";
-import RecommendedPostsSection from "./components/RecommendedPostsSection";
-import RecommendedTopics from "./components/RecommendedTopics";
+import { useEffect, useState } from 'react';
+import PostCard from './components/PostCard';
+import RecommendedPostsSection from './components/RecommendedPostsSection';
+import RecommendedTopics from './components/RecommendedTopics';
 
 export default function Home() {
-  const RecommendedPostsSectionArticles = [
-    {
-      authorName: "John Doe",
-      authorProfileImage: "/dummy-profile-2.jpg",
-      postTitle: "How to Build Scalable Web Applications",
-      uploadedAt: "2 hours ago",
-    },
-    {
-      authorName: "Jane Smith",
-      authorProfileImage: "/dummy-profile-3.jpg",
-      postTitle: "Mastering React Hooks in 2025",
-      uploadedAt: "5 hours ago",
-    },
-    {
-      authorName: "Emily Johnson",
-      authorProfileImage: "/dummy-profile-4.jpg",
-      postTitle: "SEO Best Practices for Modern Websites",
-      uploadedAt: "1 day ago",
-    },
-  ];
+  const [posts, setPosts] = useState([]);
+  const [recommendedTopics, setRecommendedTopics] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const recommendedTopics = [
-    { name: "Web Development" },
-    { name: "Artificial Intelligence" },
-    { name: "Data Science" },
-    { name: "Machine Learning" },
-    { name: "Cloud Computing" },
-    { name: "Cybersecurity" },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem('accessToken');
 
-  const posts = [
-    {
-      author: "John Doe",
-      authorImage: "/dummy-profile-2.jpg",
-      title: "Building a Modern Web Application",
-      description: "Learn how to create a modern web application using React and Tailwind CSS.",
-      image: "/thumbnail-1.jpg",
-      updatedAt: "3 hours ago",
-      likes: 120,
-      comments: 15,
-      isBookmarked: false,
-    },
-    {
-      author: "Jane Smith",
-      authorImage: "/dummy-profile-4.jpg",
-      title: "SEO Best Practices for 2025",
-      description: "Discover the latest SEO trends and best practices to rank higher in search engines.",
-      image: "/thumbnail-3.jpg",
-      updatedAt: "2 days ago",
-      likes: 230,
-      comments: 45,
-      isBookmarked: true,
-    },
-    {
-      author: "Emily Johnson",
-      authorImage: "/dummy-profile-3.jpg",
-      title: "The Future of Artificial Intelligence",
-      description: "Explore the advancements and ethical considerations of AI in 2025.",
-      image: "/thumbnail-2.jpg",
-      updatedAt: "1 week ago",
-      likes: 310,
-      comments: 60,
-      isBookmarked: false,
-    },
-    {
-      author: "Michael Brown",
-      authorImage: "/dummy-profile-2.jpg",
-      title: "A Guide to Cloud Computing",
-      description: "Learn the fundamentals of cloud computing and how businesses are leveraging it.",
-      image: "/thumbnail-1.jpg",
-      updatedAt: "4 days ago",
-      likes: 145,
-      comments: 23,
-      isBookmarked: true,
-    },
-    {
-      author: "Sophia Davis",
-      authorImage: "/dummy-profile-1.jpg",
-      title: "Cybersecurity in the Age of AI",
-      description: "Discover how AI is transforming cybersecurity and what you can do to stay safe.",
-      image: "/thumbnail-3.jpg",
-      updatedAt: "3 hours ago",
-      likes: 200,
-      comments: 30,
-      isBookmarked: false,
-    },
-  ];
+        // Fetch articles
+        const articlesResponse = await fetch('http://localhost:8000/articles/', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const articlesData = await articlesResponse.json();
+        const formattedArticles = articlesData.map(article => ({
+          author: article.author,
+          title: article.title,
+          description: article.seo_description,
+          image: '/dummy-image.jpg', // Use dummy image for now
+          updatedAt: article.updated_at,
+          likes: article.like_count,
+          comments: 0, // You can update this when the comment count API is ready
+          isBookmarked: false,
+        }));
+
+        // Fetch tags for recommended topics
+        const tagsResponse = await fetch('http://localhost:8000/articles/tags', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const tagsData = await tagsResponse.json();
+        const formattedTopics = tagsData.map(tag => ({
+          name: tag.name,
+        }));
+
+        setPosts(formattedArticles);
+        setRecommendedTopics(formattedTopics);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setError('Failed to load data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div>
@@ -100,7 +74,7 @@ export default function Home() {
             <div key={index}>
               <PostCard
                 author={post.author}
-                authorImage={post.authorImage}
+                authorImage="/dummy-profile.jpg" // Dummy profile image for now
                 title={post.title}
                 description={post.description}
                 image={post.image}
@@ -115,8 +89,10 @@ export default function Home() {
         </div>
 
         <div className="w-full lg:w-1/3 space-y-8">
-          <RecommendedPostsSection articles={RecommendedPostsSectionArticles} />
+          {/* Recommended Posts Section: Display the top 3 articles */}
+          <RecommendedPostsSection articles={posts.slice(0, 3)} />
 
+          {/* Recommended Topics Section */}
           <RecommendedTopics topics={recommendedTopics} />
         </div>
       </div>

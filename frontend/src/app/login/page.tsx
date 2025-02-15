@@ -10,6 +10,11 @@ const Login = () => {
     password: "",
   });
 
+  const demoLoginCredentials = {
+    email: "testuser3090@gmail.com",
+    password: "TESTtest@123$$#",
+  };
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -53,6 +58,11 @@ const Login = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDemoLogin = () => {
+    setFormData(demoLoginCredentials);
+    handleSubmit(new Event("submit") as React.FormEvent<HTMLFormElement>);
   };
 
   return (
@@ -100,6 +110,14 @@ const Login = () => {
             {loading ? "Logging in..." : "Log In"}
           </button>
         </form>
+
+        {/* Demo Login Button */}
+        <button
+          onClick={handleDemoLogin}
+          className="w-full p-3 mt-4 bg-gray-300 text-black font-bold rounded-lg hover:bg-gray-400 transition"
+        >
+          Use Demo Login
+        </button>
 
         <div className="text-center text-gray-500">
           <p>

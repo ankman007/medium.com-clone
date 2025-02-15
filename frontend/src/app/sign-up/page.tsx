@@ -1,7 +1,6 @@
-"use client";
-
-import Link from "next/link";
+'use client';
 import React, { useState } from "react";
+import Link from "next/link";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -9,16 +8,27 @@ const Signup = () => {
     email: "",
     password: "",
     password2: "",
-    tc: true, // Assuming terms & conditions are required
+    tc: true,
   });
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
 
-  // Validate Password Strength
-  const isPasswordStrong = (password: string) => {
-    return /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password);
+  // Detailed Password Validation
+  const validatePassword = (password: string) => {
+    const errors: string[] = [];
+    const minLength = 8;
+
+    if (password.length < minLength) errors.push(`Password must be at least ${minLength} characters.`);
+    if (!/[A-Z]/.test(password)) errors.push("Password must contain at least one uppercase letter.");
+    if (!/[a-z]/.test(password)) errors.push("Password must contain at least one lowercase letter.");
+    if (!/\d/.test(password)) errors.push("Password must contain at least one number.");
+    if (!/[@$!%*?&]/.test(password)) errors.push("Password must contain at least one special character.");
+    if (/\s/.test(password)) errors.push("Password cannot contain spaces.");
+
+    return errors;
   };
 
   const handleFormChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,18 +39,22 @@ const Signup = () => {
     event.preventDefault();
     setError(null);
     setSuccess(null);
+    setPasswordErrors([]);
 
     // Client-side validation
     if (!formData.name || !formData.email || !formData.password || !formData.password2) {
       setError("All fields are required.");
       return;
     }
+
     if (formData.password !== formData.password2) {
       setError("Passwords do not match.");
       return;
     }
-    if (!isPasswordStrong(formData.password)) {
-      setError("Password must be at least 8 characters long, include a capital letter, a number, and a special character.");
+
+    const passwordValidationErrors = validatePassword(formData.password);
+    if (passwordValidationErrors.length > 0) {
+      setPasswordErrors(passwordValidationErrors);
       return;
     }
 
@@ -65,7 +79,7 @@ const Signup = () => {
 
       setSuccess("Signup successful! Redirecting...");
       setTimeout(() => (window.location.href = "/login"), 2000);
-    } catch (err: any) {
+    } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
@@ -122,6 +136,11 @@ const Signup = () => {
               placeholder="••••••••"
               required
             />
+            <ul className="mt-2 text-red-500 text-sm">
+              {passwordErrors.map((error, index) => (
+                <li key={index}>{error}</li>
+              ))}
+            </ul>
           </div>
 
           <div>

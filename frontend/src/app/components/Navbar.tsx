@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
@@ -10,75 +10,32 @@ import {
   faCog,
   faQuestionCircle,
   faSignOutAlt,
-
 } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const router = useRouter();
 
-  // Check if user is logged in by looking for access token in localStorage
-  const checkLoginStatus = () => {
+  useEffect(() => {
+    // Checking if the access token is present in localStorage
     const token = localStorage.getItem("accessToken");
-    setIsLoggedIn(!!token); // Set logged-in status based on token presence
-  };
+    if (token) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const handleLogout = async () => {
-    const refreshToken = localStorage.getItem("refreshToken");
-  
-    if (!refreshToken) {
-      console.log("No refresh token found.");
-      return;
-    }
-  
-    try {
-      const response = await fetch("http://localhost:8000/user/logout/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-        body: JSON.stringify({ refresh_token: refreshToken }),
-      });
-  
-      // Check if the response is okay
-      if (!response.ok) {
-        // If the response isn't okay, check if it has a body
-        const errorResponse = await response.text(); // Use text() to avoid JSON parsing error
-        console.log("Logout error:", errorResponse);
-        throw new Error(errorResponse || "Logout failed. Please try again.");
-      }
-  
-      // If the response is okay and has content, parse it
-      const data = await response.json();
-      console.log("Logout success:", data.msg);
-  
-      // Clear localStorage and update state
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      setIsLoggedIn(false);
-  
-      // Redirect to the login page after logout
-      router.push("/login");
-    } catch (error) {
-      console.log("Logout error:", error);
-    }
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    setIsLoggedIn(false);
   };
-  
-  
-
-  // Call checkLoginStatus whenever component is rendered
-  React.useEffect(() => {
-    checkLoginStatus();
-  }, []);
 
   return (
     <nav className="w-full bg-white py-2 px-4 flex justify-between items-center">
@@ -131,7 +88,8 @@ const Navbar = () => {
                     href="#"
                     className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
                   >
-                    <FontAwesomeIcon icon={faBookmark} className="mr-2" /> Bookmarks
+                    <FontAwesomeIcon icon={faBookmark} className="mr-2" />{" "}
+                    Bookmarks
                   </a>
                   <a
                     href="#"
@@ -143,15 +101,17 @@ const Navbar = () => {
                     href="#"
                     className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
                   >
-                    <FontAwesomeIcon icon={faQuestionCircle} className="mr-2" /> Help
+                    <FontAwesomeIcon icon={faQuestionCircle} className="mr-2" />{" "}
+                    Help
                   </a>
                   <hr className="my-2" />
                   <a
                     href="#"
-                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 no-underline hover:text-white"
                     onClick={handleLogout} // Call logout function on click
                   >
-                    <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" /> Sign Out
+                    <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />{" "}
+                    Sign Out
                   </a>
                 </div>
               )}
@@ -159,10 +119,16 @@ const Navbar = () => {
           </>
         ) : (
           <div className="flex space-x-6">
-            <Link href="/login" className="text-black font-bold hover:underline">
+            <Link
+              href="/login"
+              className="flex items-center space-x-2 no-underline hover:text-white bg-black text-white rounded-full py-2 px-4 hover:bg-gray-800"
+            >
               Log In
             </Link>
-            <Link href="/sign-up" className="text-black font-bold hover:underline">
+            <Link
+              href="/login"
+              className="flex items-center space-x-2 bg-black text-white rounded-full py-2 px-4 no-underline hover:text-white hover:bg-gray-800"
+            >
               Sign Up
             </Link>
           </div>

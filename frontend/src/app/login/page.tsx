@@ -47,11 +47,9 @@ const Login = () => {
         throw new Error(data.msg || "Login failed. Please check your credentials.");
       }
 
-      // Store tokens in localStorage
       localStorage.setItem("accessToken", data.Token.access);
       localStorage.setItem("refreshToken", data.Token.refresh);
 
-      // Redirect to dashboard
       router.push("/");
     } catch (err: any) {
       setError(err.message);

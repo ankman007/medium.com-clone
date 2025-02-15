@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// Define types
 interface Article {
   id: number;
   title: string;
@@ -15,14 +14,12 @@ interface ArticleState {
   error: string | null;
 }
 
-// Initial state
 const initialState: ArticleState = {
   articles: [],
   loading: false,
   error: null,
 };
 
-// Async Thunks
 export const fetchArticles = createAsyncThunk(
   'articles/fetchAll',
   async (_, { rejectWithValue }) => {
@@ -57,7 +54,6 @@ export const createArticle = createAsyncThunk(
   }
 );
 
-// Article Slice
 const articleSlice = createSlice({
   name: 'articles',
   initialState,

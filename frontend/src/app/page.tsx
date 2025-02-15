@@ -3,12 +3,31 @@ import { useEffect, useState } from 'react';
 import PostCard from './components/PostCard';
 import RecommendedPostsSection from './components/RecommendedPostsSection';
 import RecommendedTopics from './components/RecommendedTopics';
+import { dummyProfileImages, thumbnailImages } from '../../constant/images.';
+import { getRandomimage, formatDate } from '../../utils';
+
+interface Post {
+  author: string;
+  title: string;
+  description: string;
+  updatedAt: string;
+  likes: number;
+  comments: number;
+  isBookmarked: boolean;
+  authorImage: string;
+  thumbnailImage: string;
+  seoSlug: string;
+}
+
+interface Topic {
+  name: string;
+}
 
 export default function Home() {
-  const [posts, setPosts] = useState([]);
-  const [recommendedTopics, setRecommendedTopics] = useState([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [recommendedTopics, setRecommendedTopics] = useState<Topic[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -16,32 +35,42 @@ export default function Home() {
         setLoading(true);
         const token = localStorage.getItem('accessToken');
 
-        // Fetch articles
         const articlesResponse = await fetch('http://localhost:8000/articles/', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
+
+        if (!articlesResponse.ok) {
+          throw new Error('Failed to fetch articles');
+        }
+
         const articlesData = await articlesResponse.json();
-        const formattedArticles = articlesData.map(article => ({
+        const formattedArticles = (articlesData || []).map((article: any) => ({
           author: article.author,
           title: article.title,
           description: article.seo_description,
-          image: '/dummy-image.jpg', // Use dummy image for now
-          updatedAt: article.updated_at,
+          updatedAt: formatDate(article.updated_at),
           likes: article.like_count,
-          comments: 0, // You can update this when the comment count API is ready
+          comments: 0, 
           isBookmarked: false,
+          authorImage: getRandomimage(dummyProfileImages),
+          thumbnailImage: getRandomimage(thumbnailImages),
+          seoSlug: article.seo_slug,
         }));
 
-        // Fetch tags for recommended topics
         const tagsResponse = await fetch('http://localhost:8000/articles/tags', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
+
+        if (!tagsResponse.ok) {
+          throw new Error('Failed to fetch tags');
+        }
+
         const tagsData = await tagsResponse.json();
-        const formattedTopics = tagsData.map(tag => ({
+        const formattedTopics = (tagsData || []).map((tag: any) => ({
           name: tag.name,
         }));
 
@@ -66,22 +95,31 @@ export default function Home() {
     return <div>{error}</div>;
   }
 
+  const recommendedArticles = posts.slice(-3).map((post) => ({
+    authorName: post.author,
+    authorProfileImage: getRandomimage(dummyProfileImages),
+    postTitle: post.title,
+    uploadedAt: post.updatedAt,
+    seoSlug: post.seoSlug,
+  }));
+
   return (
     <div>
       <div className="flex flex-col lg:flex-row px-4 lg:px-8 py-8 gap-8">
         <div className="flex-grow space-y-6">
           {posts.map((post, index) => (
-            <div key={index}>
+            <div key={post.title + index}>
               <PostCard
                 author={post.author}
-                authorImage="/dummy-profile.jpg" // Dummy profile image for now
+                authorImage={post.authorImage}
                 title={post.title}
                 description={post.description}
-                image={post.image}
+                image={post.thumbnailImage}
                 updatedAt={post.updatedAt}
                 likes={post.likes}
                 comments={post.comments}
                 isBookmarked={post.isBookmarked}
+                seoSlug={post.seoSlug}
               />
               <hr />
             </div>
@@ -89,10 +127,7 @@ export default function Home() {
         </div>
 
         <div className="w-full lg:w-1/3 space-y-8">
-          {/* Recommended Posts Section: Display the top 3 articles */}
-          <RecommendedPostsSection articles={posts.slice(0, 3)} />
-
-          {/* Recommended Topics Section */}
+          <RecommendedPostsSection articles={recommendedArticles} />
           <RecommendedTopics topics={recommendedTopics} />
         </div>
       </div>

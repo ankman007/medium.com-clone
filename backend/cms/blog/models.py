@@ -8,17 +8,22 @@ class Article(models.Model):
     content = models.TextField()
     seo_description = models.CharField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True) 
+    updated_at = models.DateTimeField(auto_now=True)
     seo_slug = models.CharField(max_length=255)
     tags = models.ManyToManyField('Tag', related_name='articles')
 
+    author_name = models.CharField(max_length=255, blank=True, null=True)
+
     def save(self, *args, **kwargs):
+        if not self.author_name:
+            self.author_name = self.author.name
         if not self.seo_slug:
             self.seo_slug = slugify(self.title)
         super(Article, self).save(*args, **kwargs)
     
     def __str__(self):
         return self.title
+
 class Comment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='comments')

@@ -26,8 +26,8 @@ export const login = createAsyncThunk(
   'auth/login',
   async (userData: { email: string; password: string }, { rejectWithValue }) => {
     try {
-      const response = await http.post(urls.auth.login, userData);  // Making POST request to login API
-      return response;  // Return user data (or token)
+      const response = await http.post(urls.auth.login, userData);
+      return response;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Something went wrong');
     }
@@ -45,24 +45,24 @@ const authSlice = createSlice({
       })
       .addCase(signup.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;  // Set user data after successful signup
+        state.user = action.payload;
         state.error = null;
       })
       .addCase(signup.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload as string;  // Set error message
+        state.error = action.payload as string;
       })
       .addCase(login.pending, (state) => {
         state.loading = true;
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;  // Set user data after successful login
+        state.user = action.payload;
         state.error = null;
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload as string;  // Set error message
+        state.error = action.payload as string;
       });
   },
 });

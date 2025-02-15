@@ -11,7 +11,6 @@ const ResetPassword = () => {
       alert("Passwords do not match!");
       return;
     }
-    // TODO: API call to reset password
     alert("Password reset successfully!");
   };
 

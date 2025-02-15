@@ -10,8 +10,8 @@ const nextConfig: NextConfig = {
       bodySizeLimit: undefined,
       allowedOrigins: undefined,
     },
-    logging: 'verbose', // Enable detailed logs
-    serverComponentsExternalPackages: ['@fortawesome', '@tiptap', 'react-draft-wysiwyg'], // Add this for external packages
+    logging: 'verbose',
+    serverComponentsExternalPackages: ['@fortawesome', '@tiptap', 'react-draft-wysiwyg'],
   },
   compiler: {
     removeConsole: false,

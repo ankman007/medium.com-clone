@@ -1,12 +1,14 @@
 'use client';
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface Article {
   authorName: string;
   authorProfileImage: string;
   postTitle: string;
   uploadedAt: string;
+  seoSlug: string;
 }
 
 interface RecommendedPostsSectionProps {
@@ -35,7 +37,11 @@ const RecommendedPostsSection: React.FC<RecommendedPostsSectionProps> = ({ artic
               <span className="text-sm text-gray-700">{article.authorName}</span>
             </div>
 
-            <h3 className="text-md font-semibold text-gray-900">{article.postTitle}</h3>
+            <Link href={`/post/${article.seoSlug}`}> 
+              <h3 className="text-md font-semibold text-gray-900 hover:cursor-pointer">
+                {article.postTitle}
+              </h3>
+            </Link>
 
             <span className="text-xs text-gray-500">{article.uploadedAt}</span>
           </div>

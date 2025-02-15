@@ -1,8 +1,14 @@
-'use client';
+"use client";
 import React from "react";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faCommentAlt, faBookmark, faFlag } from "@fortawesome/free-solid-svg-icons";
+import {
+  faHeart,
+  faCommentAlt,
+  faBookmark,
+  faFlag,
+} from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
 
 interface PostCardProps {
   author: string;
@@ -14,6 +20,7 @@ interface PostCardProps {
   likes: number;
   comments: number;
   isBookmarked: boolean;
+  seoSlug: string;
 }
 
 const PostCard: React.FC<PostCardProps> = ({
@@ -26,6 +33,7 @@ const PostCard: React.FC<PostCardProps> = ({
   likes,
   comments,
   isBookmarked,
+  seoSlug,
 }) => {
   return (
     <div className="bg-white border rounded-lg p-4 mb-6">
@@ -41,8 +49,11 @@ const PostCard: React.FC<PostCardProps> = ({
             />
             <span className="text-gray-600 text-sm font-medium">{author}</span>
           </div>
-
-          <h2 className="text-xl font-bold text-gray-900 mt-2">{title}</h2>
+          <Link href={`/post/${seoSlug}`}>
+            <h2 className="text-xl font-bold text-gray-900 mt-2 hover:cursor-pointer">
+              {title}
+            </h2>
+          </Link>
           <p className="text-gray-700 text-sm line-clamp-3">{description}</p>
 
           <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
@@ -55,14 +66,20 @@ const PostCard: React.FC<PostCardProps> = ({
               </div>
 
               <div className="flex items-center space-x-1 cursor-pointer">
-                <FontAwesomeIcon icon={faCommentAlt} className="text-gray-500" />
+                <FontAwesomeIcon
+                  icon={faCommentAlt}
+                  className="text-gray-500"
+                />
                 <span>{comments}</span>
               </div>
             </div>
 
             <div className="flex items-center space-x-4">
               <div className="cursor-pointer">
-                <FontAwesomeIcon icon={faBookmark} className={isBookmarked ? "text-yellow-500" : "text-gray-500"} />
+                <FontAwesomeIcon
+                  icon={faBookmark}
+                  className={isBookmarked ? "text-yellow-500" : "text-gray-500"}
+                />
               </div>
               <div className="cursor-pointer">
                 <FontAwesomeIcon icon={faFlag} className="text-gray-500" />

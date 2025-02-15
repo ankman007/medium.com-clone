@@ -16,7 +16,6 @@ const Signup = () => {
   const [success, setSuccess] = useState<string | null>(null);
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
 
-  // Detailed Password Validation
   const validatePassword = (password: string) => {
     const errors: string[] = [];
     const minLength = 8;
@@ -41,7 +40,6 @@ const Signup = () => {
     setSuccess(null);
     setPasswordErrors([]);
 
-    // Client-side validation
     if (!formData.name || !formData.email || !formData.password || !formData.password2) {
       setError("All fields are required.");
       return;
@@ -73,9 +71,9 @@ const Signup = () => {
         throw new Error(data.message || "Signup failed. Please try again.");
       }
 
-      // Store tokens in localStorage
       localStorage.setItem("accessToken", data.token.access);
       localStorage.setItem("refreshToken", data.token.refresh);
+      
 
       setSuccess("Signup successful! Redirecting...");
       setTimeout(() => (window.location.href = "/login"), 2000);

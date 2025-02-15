@@ -5,7 +5,6 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faCommentAlt, faBookmark } from '@fortawesome/free-solid-svg-icons';
 
-// Add icons to the library
 library.add(faHeart, faCommentAlt, faBookmark);
 
 interface PostPageProps {
@@ -23,13 +22,13 @@ interface PostPageProps {
 }
 
 const PostPage: React.FC<PostPageProps> = ({
-  thumbnail,
+  thumbnail = "/thumbnail-1.jpg",
   title,
   seoDescription,
   authorName,
-  authorProfileImage,
+  authorProfileImage = "/dummy-profile-1.jpg",
   uploadedAt,
-  readTime,
+  readTime = "3 min",
   likes,
   comments,
   isBookmarked,

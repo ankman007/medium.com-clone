@@ -10,6 +10,8 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from django.contrib.auth import get_user_model
 
 class ArticleListView(APIView):
+    permission_classes = []  
+
     def get(self, request):
         try:
             articles = Article.objects.all()
@@ -20,9 +22,9 @@ class ArticleListView(APIView):
             return Response({"error": "Error fetching article list"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class ArticleDetail(APIView):
-    def get(self, request, id):
+    def get(self, request, seo_slug):
         try:
-            article = get_object_or_404(Article, id=id)
+            article = Article.objects.filter(seo_slug=seo_slug).first()
             serializer = ArticleSerializer(article)
             response_data = serializer.data
             
@@ -31,7 +33,7 @@ class ArticleDetail(APIView):
             
             return Response(response_data, status=status.HTTP_200_OK)
         except Exception as e:
-            logger.error(f"Error fetching article details for ID {id}: {e}")
+            logger.error(f"Error fetching article details for slug {seo_slug}: {e}")
             return Response({"error": "Error fetching article details"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class CreateArticleView(APIView):
@@ -39,7 +41,9 @@ class CreateArticleView(APIView):
 
     def post(self, request):
         try:
-            request.data['author'] = request.user.id  
+            # request.data['author'] = request.user.id  
+            request.data['author'] = request.user  
+
             serializer = ArticleSerializer(data=request.data)
             
             if serializer.is_valid(raise_exception=True):
@@ -88,7 +92,6 @@ class UpdateArticleView(APIView):
             logger.error(f"Error updating article with ID {id}: {e}")
             return Response({"error": "Error updating article."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 class ToggleLikeView(APIView):
     permission_classes = [IsAuthenticated]
     
@@ -106,7 +109,6 @@ class ToggleLikeView(APIView):
         except Exception as e:
             logger.error(f"Error toggling like for article ID {article_id}: {e}")
             return Response({"error": "Error toggling like"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class AddCommentView(APIView):
     permission_classes = [IsAuthenticated]
@@ -151,7 +153,6 @@ class AddTagsToArticleView(APIView):
         except Exception as e:
             logger.error(f"Error adding tags to article ID {article_id}: {e}")
             return Response({"error": "Error adding tags"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class CreateTagView(APIView):
     permission_classes = [IsAuthenticated]
@@ -212,7 +213,6 @@ class UploadImageView(APIView):
             return Response({"error": "Error uploading image"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class TagsListView(APIView):
-    permission_classes = [IsAuthenticated]
     def get(self, request):
         try:
             tags = Tag.objects.all()

@@ -1,3 +1,4 @@
+// after loggin in when i am initially being redireced to the homepage conditional rendering is not working why "
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -16,11 +17,11 @@ import Link from "next/link";
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
 
   useEffect(() => {
-    // Checking if the access token is present in localStorage
     const token = localStorage.getItem("accessToken");
+    console.log("Token in localStorage:", token); 
     if (token) {
       setIsLoggedIn(true);
     } else {
@@ -37,12 +38,16 @@ const Navbar = () => {
     setIsLoggedIn(false);
   };
 
+  if (isLoggedIn === null) {
+    return <div></div>;
+  }
+
   return (
     <nav className="w-full bg-white py-2 px-4 flex justify-between items-center">
       <div className="flex items-center space-x-6">
-        <div className="text-2xl font-bold text-gray-800 cursor-pointer">
+        <Link href={"/"} className="text-2xl font-bold text-gray-800 cursor-pointer">
           DevFlow
-        </div>
+        </Link>
         {isLoggedIn && (
           <div className="relative">
             <input
@@ -108,7 +113,7 @@ const Navbar = () => {
                   <a
                     href="#"
                     className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 no-underline hover:text-white"
-                    onClick={handleLogout} // Call logout function on click
+                    onClick={handleLogout}
                   >
                     <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />{" "}
                     Sign Out
@@ -120,13 +125,12 @@ const Navbar = () => {
         ) : (
           <div className="flex space-x-6">
             <Link
-              href="/login"
-              className="flex items-center space-x-2 no-underline hover:text-white bg-black text-white rounded-full py-2 px-4 hover:bg-gray-800"
-            >
+                href="/login"
+                className="flex items-center space-x-2 bg-black text-white rounded-full py-2 px-4 no-underline hover:text-white hover:bg-gray-800"            >
               Log In
             </Link>
             <Link
-              href="/login"
+              href="/sign-up"
               className="flex items-center space-x-2 bg-black text-white rounded-full py-2 px-4 no-underline hover:text-white hover:bg-gray-800"
             >
               Sign Up

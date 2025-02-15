@@ -7,7 +7,7 @@ from .serializers import ArticleSerializer, CommentSerializer, ImageSerializer, 
 from .models import Article, Comment, Like, Tag
 from loguru import logger
 from rest_framework.parsers import MultiPartParser, FormParser
-from django.conf import settings
+from django.contrib.auth import get_user_model
 
 class ArticleListView(APIView):
     def get(self, request):
@@ -18,7 +18,6 @@ class ArticleListView(APIView):
         except Exception as e:
             logger.error(f"Error fetching article list: {e}")
             return Response({"error": "Error fetching article list"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class ArticleDetail(APIView):
     def get(self, request, id):
@@ -60,7 +59,6 @@ class CreateArticleView(APIView):
             logger.error(f"Error creating article: {e}")
             return Response({"error": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 class DeleteArticleView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -72,7 +70,6 @@ class DeleteArticleView(APIView):
         except Exception as e:
             logger.error(f"Error deleting article with ID {id}: {e}")
             return Response({"error": "Error deleting article."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class UpdateArticleView(APIView):
     permission_classes = [IsAuthenticated]
@@ -175,27 +172,27 @@ class CreateTagView(APIView):
         
 
 class GetPostsByUserView(APIView):
-    def get(self, request, username):
+    def get(self, request, id):
         try:
-            user = get_object_or_404(settings.AUTH_USER_MODEL, username=username)
+            user = get_user_model()
+            user = get_object_or_404(user, id=id)
             articles = Article.objects.filter(author=user)
             serializer = ArticleSerializer(articles, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
-            logger.error(f"Error fetching articles by user {username}: {e}")
+            logger.error(f"Error fetching articles by user {id}: {e}")
             return Response({"error": "Error fetching articles by user"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class GetPostsByTagView(APIView):
-    def get(self, request, tag_name):
+    def get(self, request, id):
         try:
-            tag = get_object_or_404(Tag, name=tag_name)
+            tag = get_object_or_404(Tag, name=id)
             articles = Article.objects.filter(tags=tag)
             serializer = ArticleSerializer(articles, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
-            logger.error(f"Error fetching articles for tag {tag_name}: {e}")
+            logger.error(f"Error fetching articles for tag {id}: {e}")
             return Response({"error": "Error fetching articles by tag"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class UploadImageView(APIView):
     permission_classes = [IsAuthenticated]
@@ -213,3 +210,16 @@ class UploadImageView(APIView):
         except Exception as e:
             logger.error(f"Error uploading image: {e}")
             return Response({"error": "Error uploading image"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class TagsListView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        try:
+            tags = Tag.objects.all()
+            serializer = TagSerializer(tags, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"Error fetching tags: {e}")
+            return Response({"error": "Error fetching tags"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+    

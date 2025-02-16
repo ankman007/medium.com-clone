@@ -5,26 +5,30 @@ import Link from "next/link";
 
 interface Article {
   authorName: string;
+  authorEmail: string;
+  authorId: number;
   authorProfileImage: string;
   postTitle: string;
   uploadedAt: string;
   seoSlug: string;
+  articleId: number;
 }
 
-interface RecommendedPostsSectionProps {
+interface StaffPicksSectionProps {
   articles: Article[];
 }
 
-const RecommendedPostsSection: React.FC<RecommendedPostsSectionProps> = ({ articles }) => {
+const StaffPicksSection: React.FC<StaffPicksSectionProps> = ({ articles }) => {
   return (
     <>
     <div className="bg-white rounded-lg p-4">
-      <h2 className="text-lg font-bold text-gray-900 mb-4">Recommended Posts</h2>
+      <h2 className="text-lg font-bold text-gray-900 mb-4">Staff Picks</h2>
 
       <div className="space-y-6">
         {articles.map((article, index) => (
           <div key={index} className="flex flex-col space-y-2">
             <div className="flex items-center space-x-2">
+            <Link href={`/${article.authorId}/${article.authorName}`} className="flex items-center space-x-2">
               <div className="relative w-8 h-8">
                 <Image
                   src={article.authorProfileImage}
@@ -35,9 +39,10 @@ const RecommendedPostsSection: React.FC<RecommendedPostsSectionProps> = ({ artic
                 />
               </div>
               <span className="text-sm text-gray-700">{article.authorName}</span>
+              </Link>
             </div>
 
-            <Link href={`/post/${article.seoSlug}`}> 
+            <Link href={`/post/${article.articleId}/${article.seoSlug}`}> 
               <h3 className="text-md font-semibold text-gray-900 hover:cursor-pointer">
                 {article.postTitle}
               </h3>
@@ -47,9 +52,14 @@ const RecommendedPostsSection: React.FC<RecommendedPostsSectionProps> = ({ artic
           </div>
         ))}
         </div>
+        <Link href={`/staff-picks`}> 
+              <h3 className="pt-4 text-base font-semibold text-gray-600 hover:cursor-pointer">
+                See the full list
+              </h3>
+        </Link>
     </div>
     </>
   );
 };
 
-export default RecommendedPostsSection;
+export default StaffPicksSection;

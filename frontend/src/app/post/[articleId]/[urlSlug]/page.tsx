@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import PostPage from "../../components/PostPage";
-import { formatDate } from "../../../../utils";
+import PostPage from "../../../components/PostPage";
+import { formatDate } from "../../../../../utils";
 
 const PostDetailPage = () => {
-  const { urlSlug } = useParams();
+  const { urlSlug, articleId } = useParams();
   const [articleData, setArticleData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -22,7 +22,7 @@ const PostDetailPage = () => {
 
           try {
             const articlesResponse = await fetch(
-              `http://localhost:8000/articles/${urlSlug}`,
+              `http://localhost:8000/articles/${articleId}`,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
@@ -69,7 +69,7 @@ const PostDetailPage = () => {
     };
 
     fetchArticleData();
-  }, [urlSlug]);
+  }, [urlSlug, articleId]);
 
   if (loading) {
     return <div>Loading article...</div>;

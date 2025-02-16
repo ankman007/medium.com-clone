@@ -22,18 +22,21 @@ class ArticleListView(APIView):
             return Response({"error": "Error fetching article list"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class ArticleDetail(APIView):
-    def get(self, request, seo_slug):
+    def get(self, request, id):
         try:
-            article = Article.objects.filter(seo_slug=seo_slug).first()
+            article = Article.objects.filter(id=id).first()
+            if not article:
+                return Response({"error": "Article not found"}, status=status.HTTP_404_NOT_FOUND)
+
             serializer = ArticleSerializer(article)
             response_data = serializer.data
             
             response_data['like_count'] = Like.objects.filter(article=article).count()
-            response_data['comments_count'] = article.comments.count()  
+            response_data['comments_count'] = article.comments.count()
             
             return Response(response_data, status=status.HTTP_200_OK)
         except Exception as e:
-            logger.error(f"Error fetching article details for slug {seo_slug}: {e}")
+            logger.error(f"Error fetching article details for id {id}: {e}")
             return Response({"error": "Error fetching article details"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class CreateArticleView(APIView):
@@ -154,7 +157,7 @@ class AddTagsToArticleView(APIView):
             logger.error(f"Error adding tags to article ID {article_id}: {e}")
             return Response({"error": "Error adding tags"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class CreateTagView(APIView):
+class CreateTagView(APIView): 
     permission_classes = [IsAuthenticated]
 
     def post(self, request):

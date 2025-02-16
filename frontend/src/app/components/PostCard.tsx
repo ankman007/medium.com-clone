@@ -11,7 +11,9 @@ import {
 import Link from "next/link";
 
 interface PostCardProps {
-  author: string;
+  authorId: number;
+  authorName: string;
+  authorEmail: string;
   authorImage: string;
   title: string;
   description: string;
@@ -21,10 +23,13 @@ interface PostCardProps {
   comments: number;
   isBookmarked: boolean;
   seoSlug: string;
+  articleId: number;
 }
 
 const PostCard: React.FC<PostCardProps> = ({
-  author,
+  authorId,
+  authorName,
+  authorEmail,
   authorImage,
   title,
   description,
@@ -34,22 +39,25 @@ const PostCard: React.FC<PostCardProps> = ({
   comments,
   isBookmarked,
   seoSlug,
+  articleId,
 }) => {
   return (
     <div className="bg-white border rounded-lg p-4 mb-6">
       <div className="flex flex-col md:flex-row">
         <div className="flex flex-col justify-between flex-1">
           <div className="flex items-center space-x-3">
+            <Link href={`/${authorId}/${authorName}`} className="flex items-center space-x-2">
             <Image
               src={authorImage}
-              alt={author}
+              alt={authorName}
               width={32}
               height={32}
               className="rounded-full object-cover"
             />
-            <span className="text-gray-600 text-sm font-medium">{author}</span>
+            <span className="text-gray-600 text-sm font-medium">{authorName}</span>
+            </Link>
           </div>
-          <Link href={`/post/${seoSlug}`}>
+          <Link href={`/post/${articleId}/${seoSlug}`}>
             <h2 className="text-xl font-bold text-gray-900 mt-2 hover:cursor-pointer">
               {title}
             </h2>

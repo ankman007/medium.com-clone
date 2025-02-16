@@ -1,13 +1,16 @@
-'use client';
-import { useEffect, useState } from 'react';
-import PostCard from './components/PostCard';
-import RecommendedPostsSection from './components/RecommendedPostsSection';
-import RecommendedTopics from './components/RecommendedTopics';
-import { dummyProfileImages, thumbnailImages } from '../../constant/images.';
-import { getRandomimage, formatDate } from '../../utils';
+"use client";
+import { useEffect, useState } from "react";
+import PostCard from "./components/PostCard";
+import StaffPicksSection from "./components/StaffPicksSection";
+import RecommendedTopics from "./components/RecommendedTopics";
+import { dummyProfileImages, thumbnailImages } from "../../constant/images.";
+import { getRandomimage, formatDate } from "../../utils";
 
 interface Post {
-  author: string;
+  articleId: number;
+  authorId: number;
+  authorName: string;
+  authorEmail: string;
   title: string;
   description: string;
   updatedAt: string;
@@ -33,52 +36,63 @@ export default function Home() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem('accessToken');
+        const token = localStorage.getItem("accessToken");
 
-        const articlesResponse = await fetch('http://localhost:8000/articles/', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const articlesResponse = await fetch(
+          "http://localhost:8000/articles/",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!articlesResponse.ok) {
-          throw new Error('Failed to fetch articles');
+          throw new Error("Failed to fetch articles");
         }
 
         const articlesData = await articlesResponse.json();
         const formattedArticles = (articlesData || []).map((article: any) => ({
-          author: article.author,
+          articleId: article.id,
+          authorName: article.author_name,
+          authorId: article.author_id,
+          authorEmail: article.author_email,
           title: article.title,
           description: article.seo_description,
           updatedAt: formatDate(article.updated_at),
           likes: article.like_count,
-          comments: 0, 
+          comments: 0,
           isBookmarked: false,
           authorImage: getRandomimage(dummyProfileImages),
           thumbnailImage: getRandomimage(thumbnailImages),
           seoSlug: article.seo_slug,
         }));
 
-        const tagsResponse = await fetch('http://localhost:8000/articles/tags', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const tagsResponse = await fetch(
+          "http://localhost:8000/articles/tags",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!tagsResponse.ok) {
-          throw new Error('Failed to fetch tags');
+          throw new Error("Failed to fetch tags");
         }
 
         const tagsData = await tagsResponse.json();
+        console.log("tagData", tagsData);
         const formattedTopics = (tagsData || []).map((tag: any) => ({
           name: tag.name,
+          id: tag.id,
         }));
 
         setPosts(formattedArticles);
         setRecommendedTopics(formattedTopics);
       } catch (error) {
-        console.error('Error fetching data:', error);
-        setError('Failed to load data');
+        console.error("Error fetching data:", error);
+        setError("Failed to load data");
       } finally {
         setLoading(false);
       }
@@ -95,8 +109,11 @@ export default function Home() {
     return <div>{error}</div>;
   }
 
-  const recommendedArticles = posts.slice(-3).map((post) => ({
-    authorName: post.author,
+  const staffPicksArticles = posts.slice(-3).map((post) => ({
+    articleId: post.articleId,
+    authorId: post.authorId,
+    authorEmail: post.authorEmail,
+    authorName: post.authorName,
     authorProfileImage: getRandomimage(dummyProfileImages),
     postTitle: post.title,
     uploadedAt: post.updatedAt,
@@ -110,7 +127,10 @@ export default function Home() {
           {posts.map((post, index) => (
             <div key={post.title + index}>
               <PostCard
-                author={post.author}
+                articleId={post.articleId}
+                authorName={post.authorName}
+                authorId={post.authorId}
+                authorEmail={post.authorEmail}
                 authorImage={post.authorImage}
                 title={post.title}
                 description={post.description}
@@ -126,9 +146,9 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="w-full lg:w-1/3 space-y-8">
-          <RecommendedPostsSection articles={recommendedArticles} />
-          <RecommendedTopics topics={recommendedTopics} />
+        <div className="w-full lg:w-1/3 space-y-4">
+          <StaffPicksSection articles={staffPicksArticles} />
+          <RecommendedTopics tags={recommendedTopics} />
         </div>
       </div>
     </div>

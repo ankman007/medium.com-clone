@@ -2,18 +2,19 @@ from rest_framework import serializers
 from .models import Article, Comment, Like, Tag
 from .models import Image
 
-class ArticleSerializer(serializers.ModelSerializer): 
-    author = serializers.CharField(source='author.name', read_only=True)  
-    seo_slug = serializers.ReadOnlyField()  
-    tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)  
+class ArticleSerializer(serializers.ModelSerializer):
+    author_name = serializers.CharField(source='author.name', read_only=True)
+    author_id = serializers.CharField(source='author.id', read_only=True)
+    author_email = serializers.EmailField(source='author.email', read_only=True)  # Assuming the User model has an email field
+    seo_slug = serializers.ReadOnlyField()
+    tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
     like_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Article
-        fields = ['id', 'author', 'title', 'content', 'seo_description', 'created_at', 'updated_at', 'seo_slug', 'tags', 'like_count']
+        fields = ['id', 'author_name', 'author_id', 'author_email', 'title', 'content', 'seo_description', 'created_at', 'updated_at', 'seo_slug', 'tags', 'like_count']
         read_only_fields = ['created_at', 'updated_at']
         unique_together = ['author', 'seo_slug']
-
 
     def get_like_count(self, obj):
         return Like.objects.filter(article=obj).count()

@@ -1,4 +1,3 @@
-// after loggin in when i am initially being redireced to the homepage conditional rendering is not working why "
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -112,7 +111,7 @@ const Navbar = () => {
                   <hr className="my-2" />
                   <a
                     href="#"
-                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 no-underline hover:text-white"
+                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
                     onClick={handleLogout}
                   >
                     <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />{" "}

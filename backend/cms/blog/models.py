@@ -20,6 +20,13 @@ class Article(models.Model):
         if not self.seo_slug:
             self.seo_slug = slugify(self.title)
         super(Article, self).save(*args, **kwargs)
+        
+    def get_author_info(self):
+        return {
+            'author_name': self.author.name,
+            'author_id': self.author.id,
+            'author_email': self.author.email
+        }
     
     def __str__(self):
         return self.title

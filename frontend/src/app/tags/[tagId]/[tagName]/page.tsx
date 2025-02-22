@@ -4,6 +4,8 @@ import { useParams } from "next/navigation";
 import { formatDate, getRandomimage, capitalize } from "../../../../../utils";
 import { dummyProfileImages, thumbnailImages } from "../../../../../constant/images.";
 import PostCard from "@/app/components/PostCard";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/redux/store";
 
 interface Post {
   author: string;
@@ -23,13 +25,12 @@ export default function TagsPages() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { tagName, tagId } = useParams();
+  const token = useSelector((state: RootState) => state.auth.accessToken);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem("accessToken");
-
         const articlesResponse = await fetch(
           `http://localhost:8000/articles/tags/${tagId}`,
           {

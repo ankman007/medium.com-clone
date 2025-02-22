@@ -1,4 +1,4 @@
-const apiBaseURL = "http://localhost:8000/";
+export const apiBaseURL = "http://localhost:8000/";
 
 const endpoints = {
   health: "/health",

@@ -1,8 +1,9 @@
-"use client";
-
-import React, { useState } from "react";
+'use client';
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { setTokens } from "../redux/slices/authSlice";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -17,7 +18,9 @@ const Login = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isDemoLogin, setIsDemoLogin] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleFormChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [event.target.id]: event.target.value });
@@ -47,8 +50,9 @@ const Login = () => {
         throw new Error(data.msg || "Login failed. Please check your credentials.");
       }
 
-      localStorage.setItem("accessToken", data.Token.access);
-      localStorage.setItem("refreshToken", data.Token.refresh);
+      const { access, refresh } = data.Token;
+
+      dispatch(setTokens({ accessToken: access, refreshToken: refresh }));
 
       router.push("/");
     } catch (err: any) {
@@ -58,9 +62,16 @@ const Login = () => {
     }
   };
 
+  useEffect(() => {
+    if (isDemoLogin) {
+      handleSubmit(new Event("submit") as React.FormEvent<HTMLFormElement>);
+      setIsDemoLogin(false);
+    }
+  }, [isDemoLogin, formData]);
+
   const handleDemoLogin = () => {
     setFormData(demoLoginCredentials);
-    handleSubmit(new Event("submit") as React.FormEvent<HTMLFormElement>);
+    setIsDemoLogin(true);
   };
 
   return (

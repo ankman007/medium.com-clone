@@ -32,7 +32,7 @@ const StaffPicksSection: React.FC<StaffPicksSectionProps> = ({ articles }) => {
               <div className="relative w-8 h-8">
                 <Image
                   src={article.authorProfileImage}
-                  alt={article.authorName}
+                  alt="Description of the image"
                   width={32}
                   height={32}
                   className="rounded-full object-cover"

@@ -3,8 +3,11 @@ import { useEffect, useState } from "react";
 import PostCard from "./components/PostCard";
 import StaffPicksSection from "./components/StaffPicksSection";
 import RecommendedTopics from "./components/RecommendedTopics";
+import HomePage from "./components/HomePage";
 import { dummyProfileImages, thumbnailImages } from "../../constant/images.";
 import { getRandomimage, formatDate } from "../../utils";
+import { useSelector } from "react-redux";
+import { RootState } from "./redux/store";
 
 interface Post {
   articleId: number;
@@ -32,20 +35,19 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const token = useSelector((state: RootState) => state.auth.accessToken);
+  const isLoggedIn = !!token;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem("accessToken");
 
-        const articlesResponse = await fetch(
-          "http://localhost:8000/articles/",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const articlesResponse = await fetch("http://localhost:8000/articles/", {
+          headers: {
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        });
 
         if (!articlesResponse.ok) {
           throw new Error("Failed to fetch articles");
@@ -68,14 +70,11 @@ export default function Home() {
           seoSlug: article.seo_slug,
         }));
 
-        const tagsResponse = await fetch(
-          "http://localhost:8000/articles/tags",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const tagsResponse = await fetch("http://localhost:8000/articles/tags", {
+          headers: {
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        });
 
         if (!tagsResponse.ok) {
           throw new Error("Failed to fetch tags");
@@ -99,7 +98,7 @@ export default function Home() {
     };
 
     fetchData();
-  }, []);
+  }, [token]); // Dependency on token to refetch data if token changes
 
   if (loading) {
     return <div>Loading...</div>;
@@ -122,35 +121,39 @@ export default function Home() {
 
   return (
     <div>
-      <div className="flex flex-col lg:flex-row px-4 lg:px-8 py-8 gap-8">
-        <div className="flex-grow space-y-6">
-          {posts.map((post, index) => (
-            <div key={post.title + index}>
-              <PostCard
-                articleId={post.articleId}
-                authorName={post.authorName}
-                authorId={post.authorId}
-                authorEmail={post.authorEmail}
-                authorImage={post.authorImage}
-                title={post.title}
-                description={post.description}
-                image={post.thumbnailImage}
-                updatedAt={post.updatedAt}
-                likes={post.likes}
-                comments={post.comments}
-                isBookmarked={post.isBookmarked}
-                seoSlug={post.seoSlug}
-              />
-              <hr />
-            </div>
-          ))}
-        </div>
+      {!isLoggedIn ? (
+        <HomePage />
+      ) : (
+        <div className="flex flex-col lg:flex-row px-4 lg:px-8 py-8 gap-8">
+          <div className="flex-grow space-y-6">
+            {posts.map((post, index) => (
+              <div key={post.title + index}>
+                <PostCard
+                  articleId={post.articleId}
+                  authorName={post.authorName}
+                  authorId={post.authorId}
+                  authorEmail={post.authorEmail}
+                  authorImage={post.authorImage}
+                  title={post.title}
+                  description={post.description}
+                  image={post.thumbnailImage}
+                  updatedAt={post.updatedAt}
+                  likes={post.likes}
+                  comments={post.comments}
+                  isBookmarked={post.isBookmarked}
+                  seoSlug={post.seoSlug}
+                />
+                <hr />
+              </div>
+            ))}
+          </div>
 
-        <div className="w-full lg:w-1/3 space-y-4">
-          <StaffPicksSection articles={staffPicksArticles} />
-          <RecommendedTopics tags={recommendedTopics} />
+          <div className="w-full lg:w-1/3 space-y-4">
+            <StaffPicksSection articles={staffPicksArticles} />
+            <RecommendedTopics tags={recommendedTopics} />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

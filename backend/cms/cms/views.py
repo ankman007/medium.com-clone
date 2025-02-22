@@ -8,6 +8,7 @@ class ApiOverview(APIView):
             'User Registration': 'user/register/',
             'User Login': 'user/login/',
             'User Profile': 'user/profile/',
+            'User Profile': 'user/auth/verify/',
             'Change Password': 'user/change-password/',
             'Send Password Reset Email': 'user/reset-password-email/',
             'Reset Password': 'user/reset-password/<uid>/<token>/',

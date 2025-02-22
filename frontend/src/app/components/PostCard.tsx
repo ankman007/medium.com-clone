@@ -49,7 +49,7 @@ const PostCard: React.FC<PostCardProps> = ({
             <Link href={`/${authorId}/${authorName}`} className="flex items-center space-x-2">
             <Image
               src={authorImage}
-              alt={authorName}
+              alt="Description of the image"
               width={32}
               height={32}
               className="rounded-full object-cover"
@@ -100,7 +100,7 @@ const PostCard: React.FC<PostCardProps> = ({
           <div className="w-full md:w-48 h-48 ml-0 md:ml-6 mt-4 md:mt-0 flex-shrink-0 relative">
             <Image
               src={image}
-              alt="Post"
+              alt="Description of the image"
               layout="fill"
               objectFit="cover"
               className="rounded-lg"

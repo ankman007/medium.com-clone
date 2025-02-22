@@ -39,7 +39,7 @@ const PostPage: React.FC<PostPageProps> = ({
       <div className="relative w-full h-96 mb-6">
         <Image
           src={thumbnail}
-          alt={title}
+          alt="Description of the image"
           layout="fill"
           objectFit="cover"
           className="rounded-lg"
@@ -54,7 +54,7 @@ const PostPage: React.FC<PostPageProps> = ({
         <div className="relative w-12 h-12">
           <Image
             src={authorProfileImage}
-            alt={authorName}
+            alt="Description of the image"
             width={48}
             height={48}
             className="rounded-full object-cover"

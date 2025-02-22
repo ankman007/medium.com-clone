@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["via.placeholder.com"],
   },
-  reactStrictMode: true,
+  reactStrictMode: false,
   experimental: {
     serverActions: {
       bodySizeLimit: undefined,

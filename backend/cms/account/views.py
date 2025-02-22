@@ -20,6 +20,15 @@ class TokenRefreshView():
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
+        
+class TokenVerifyView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, format=None):
+        try:
+            return Response({'msg': 'Token is valid.'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'errors': {'detail': str(e)}}, status=status.HTTP_400_BAD_REQUEST)
 
 class UserRegistrationView(APIView):
     renderer_classes = [UserRenderer]

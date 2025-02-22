@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import PostCard from "../components/PostCard";
 import { formatDate, getRandomimage } from "../../../utils";
 import { dummyProfileImages, thumbnailImages } from "../../../constant/images.";
-
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/redux/store";
 interface Post {
   author: string;
   title: string;
@@ -21,12 +22,12 @@ export default function RecommendedPostsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const token = useSelector((state: RootState) => state.auth.accessToken);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem("accessToken");
 
         const articlesResponse = await fetch(
           "http://localhost:8000/articles/",

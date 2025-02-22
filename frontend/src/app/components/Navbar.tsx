@@ -13,32 +13,39 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import { clearTokens } from "../redux/slices/authSlice";
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const dispatch = useDispatch();
+  
+  const accessToken = useSelector((state: RootState) => state.auth.accessToken);
+
+  const isLoggedIn = !!accessToken;
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    console.log("Token in localStorage:", token); 
-    if (token) {
-      setIsLoggedIn(true);
+    if (accessToken) {
+      setIsLoading(false);
     } else {
-      setIsLoggedIn(false);
+      setIsLoading(false);
     }
-  }, []);
+  }, [accessToken]);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    setIsLoggedIn(false);
+    dispatch(clearTokens());
+    setIsDropdownOpen(false);
   };
 
-  if (isLoggedIn === null) {
-    return <div></div>;
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
   return (
@@ -73,7 +80,7 @@ const Navbar = () => {
             <div className="relative">
               <Image
                 src="/dummy-profile-1.jpg"
-                alt="Profile"
+                alt="Description of the image"
                 width={40}
                 height={40}
                 className="rounded-full object-cover cursor-pointer"

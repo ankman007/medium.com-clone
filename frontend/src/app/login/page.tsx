@@ -130,7 +130,9 @@ const Login = () => {
 
         <div className="text-center text-gray-500">
           <p>
-            <Link href="/sign-up" className="text-black font-bold hover:underline">
+            <Link
+              href="/sign-up"
+              className="text-black font-bold text-inherit no-underline flex items-center gap-2 hover:text-white focus:text-white hover:no-underline focus:no-underline space-x-2" > 
               Sign Up
             </Link>
           </p>

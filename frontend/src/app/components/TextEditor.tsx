@@ -39,13 +39,11 @@ import {
   faUndo,
   faRedo,
 } from "@fortawesome/free-solid-svg-icons";
-// import { useRouter } from "next/router";
 
 export default function BlogEditor() {
   const token = useSelector((state: RootState) => state.auth.accessToken);
   const [title, setTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
-  // const router = useRouter();
   
   const editor = useEditor({
     extensions: [
@@ -64,7 +62,7 @@ export default function BlogEditor() {
       Image.configure({ allowBase64: true }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
     ],
-    content: "<p>Write your blog here...</p>",
+    // content: "<p>Write your blog here...</p>",
   });
 
   const handleSubmit = async () => {
@@ -106,7 +104,7 @@ export default function BlogEditor() {
   if (!editor) return <p>Loading editor...</p>;
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-[#121212] text-white rounded-lg shadow-lg">
+    <div className="max-w-5xl mx-auto p-6 bg-white text-black rounded-lg ">
       {" "}
       {/* Darker background */}
       <h2 className="text-2xl font-bold mb-4 text-center">
@@ -115,18 +113,18 @@ export default function BlogEditor() {
       <input
         type="text"
         placeholder="Enter blog title"
-        className="w-full p-2 mb-4 border border-gray-700 rounded bg-[#202020] text-white focus:outline-none focus:ring-2 focus:ring-gray-500"
+        className="w-full p-2 mb-4 border border-gray-700 rounded bg-white text-black focus:outline-none focus:ring-2 focus:ring-gray-500"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
       <input
         type="text"
         placeholder="Enter SEO description for the blog"
-        className="w-full p-2 mb-4 border border-gray-700 rounded bg-[#202020] text-white focus:outline-none focus:ring-2 focus:ring-gray-500"
+        className="w-full p-2 mb-4 border border-gray-700 rounded bg-white text-black focus:outline-none focus:ring-2 focus:ring-gray-500"
         value={seoDescription}
         onChange={(e) => setSeoDescription(e.target.value)}
       />
-      <div className="mb-2 flex flex-wrap gap-2 bg-[#282828] p-2 rounded">
+      <div className="mb-2 flex flex-wrap gap-2 bg-gray-300 p-2 rounded">
         {[
           faBold,
           faItalic,
@@ -169,7 +167,7 @@ export default function BlogEditor() {
                       level: index < 5 ? (index === 4 ? 1 : 2) : 1,
                     })
                     .run();
-                  break; // Handle H1/H2
+                  break; 
                 case faQuoteLeft:
                   editor.chain().focus().toggleBlockquote().run();
                   break;
@@ -212,20 +210,19 @@ export default function BlogEditor() {
           >
             <FontAwesomeIcon icon={icon} />{" "}
             {icon === faHeading && index < 2 ? index + 1 : ""}{" "}
-            {/* H1/H2 label */}
           </button>
         ))}
       </div>
-      {/* TipTap Editor */}
-      <div className="border border-gray-700 rounded p-2 bg-[#202020] text-white min-h-[200px] focus:outline-none">
+      <div className="border border-gray-700 rounded p-2 bg-white text-black min-h-[200px] focus:outline-none">
         {" "}
-        {/* Darker editor, remove default focus outline*/}
         <EditorContent editor={editor} />
       </div>
       {/* Submit Button */}
       <button
         onClick={handleSubmit}
-        className="w-full mt-4 bg-white text-black py-2 rounded hover:bg-gray-300"
+        // className="w-full mt-4 bg-white text-black py-2 rounded hover:bg-gray-300"
+        className="w-full mt-4 marker:flex items-center space-x-2 bg-black text-white rounded-full py-2 px-4 no-underline hover:text-white hover:bg-gray-800 focus:text-white hover:no-underline focus:no-underline"
+
       >
         Publish Blog
       </button>

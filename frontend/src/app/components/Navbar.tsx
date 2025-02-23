@@ -22,7 +22,7 @@ const Navbar = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const dispatch = useDispatch();
-  
+
   const accessToken = useSelector((state: RootState) => state.auth.accessToken);
 
   const isLoggedIn = !!accessToken;
@@ -45,13 +45,16 @@ const Navbar = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div></div>;
   }
 
   return (
     <nav className="w-full bg-white py-2 px-4 flex justify-between items-center">
       <div className="flex items-center space-x-6">
-        <Link href={"/"} className="text-2xl font-bold text-gray-800 cursor-pointer">
+        <Link
+          href={"/"}
+          className="text-2xl font-bold text-gray-800 cursor-pointer hover:text-black focus:text-black hover:no-underline focus:no-underline"
+        >
           DevFlow
         </Link>
         {isLoggedIn && (
@@ -69,8 +72,13 @@ const Navbar = () => {
         {isLoggedIn ? (
           <>
             <button className="flex items-center space-x-2 bg-black text-white rounded-full py-2 px-4 hover:bg-gray-800">
-              <FontAwesomeIcon icon={faPen} />
-              <span>Write</span>
+              <Link
+                href="/new-post"
+                className="text-inherit no-underline flex items-center gap-2 hover:text-white focus:text-white hover:no-underline focus:no-underline"
+              >
+                <FontAwesomeIcon icon={faPen} />
+                <span>Write</span>
+              </Link>
             </button>
 
             <div className="relative cursor-pointer">
@@ -131,13 +139,14 @@ const Navbar = () => {
         ) : (
           <div className="flex space-x-6">
             <Link
-                href="/login"
-                className="flex items-center space-x-2 bg-black text-white rounded-full py-2 px-4 no-underline hover:text-white hover:bg-gray-800"            >
+              href="/login"
+              className="flex items-center space-x-2 bg-black text-white rounded-full py-2 px-4 no-underline hover:text-white hover:bg-gray-800 focus:text-white hover:no-underline focus:no-underline"
+            >
               Log In
             </Link>
             <Link
               href="/sign-up"
-              className="flex items-center space-x-2 bg-black text-white rounded-full py-2 px-4 no-underline hover:text-white hover:bg-gray-800"
+              className="flex items-center space-x-2 bg-black text-white rounded-full py-2 px-4 no-underline hover:text-white hover:bg-gray-800 focus:text-white hover:no-underline focus:no-underline"
             >
               Sign Up
             </Link>

@@ -159,7 +159,9 @@ const Signup = () => {
             <input type="checkbox" id="terms" className="mr-2" required />
             <label htmlFor="terms" className="text-sm text-gray-700">
               I accept the{" "}
-              <Link href="/terms" className="text-black font-bold hover:underline">
+              <Link
+                href="/terms"
+                className="text-black text-inherit no-underline flex items-center gap-2 hover:text-white focus:text-white hover:no-underline focus:no-underline space-x-2" >
                 Terms and Conditions
               </Link>
             </label>
@@ -176,7 +178,9 @@ const Signup = () => {
 
         <div className="text-center text-gray-500">
           <p>
-            <Link href="/login" className="text-black font-bold hover:underline">
+            <Link
+              href="/login"
+              className="text-black font-bold text-inherit no-underline flex items-center gap-2 hover:text-white focus:text-white hover:no-underline focus:no-underline space-x-2" >
               Already have an account? Login
             </Link>
           </p>

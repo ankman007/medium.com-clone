@@ -121,9 +121,7 @@ export default function Home() {
 
   return (
     <div>
-      {!isLoggedIn ? (
-        <HomePage />
-      ) : (
+      {isLoggedIn ? (
         <div className="flex flex-col lg:flex-row px-4 lg:px-8 py-8 gap-8">
           <div className="flex-grow space-y-6">
             {posts.map((post, index) => (
@@ -153,6 +151,8 @@ export default function Home() {
             <RecommendedTopics tags={recommendedTopics} />
           </div>
         </div>
+      ) : (
+        <HomePage />
       )}
     </div>
   );

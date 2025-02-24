@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (
     ArticleListView, ArticleDetail, CreateArticleView, DeleteArticleView, 
     UpdateArticleView, ToggleLikeView, AddCommentView, AddTagsToArticleView, 
-    CreateTagView, GetPostsByUserView, GetPostsByTagView, UploadImageView, TagsListView
+    CreateTagView, GetPostsByUserView, GetPostsByTagView, UploadImageView, TagsListView, ArticleCommentsView
 )
 
 urlpatterns = [
@@ -14,6 +14,7 @@ urlpatterns = [
     path('<int:id>/delete/', DeleteArticleView.as_view(), name='delete-article'),
     path('<int:article_id>/like/', ToggleLikeView.as_view(), name='toggle-like'),
     path('<int:article_id>/comment/', AddCommentView.as_view(), name='add-comment'),
+    path('<int:article_id>/list-comments/', ArticleCommentsView.as_view(), name='list-comment'),
     path('<int:article_id>/tags/', AddTagsToArticleView.as_view(), name='add-tags-to-article'),
     path('tags/create/', CreateTagView.as_view(), name='create-tag'),
     path('users/<int:id>/', GetPostsByUserView.as_view(), name='get-articles-by-user'),

@@ -120,7 +120,6 @@ class ToggleLikeView(APIView):
             logger.error(f"Error toggling like for article ID {article_id}: {e}")
             return Response({"error": "Error toggling like"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 class AddCommentView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -138,6 +137,22 @@ class AddCommentView(APIView):
         except Exception as e:
             logger.error(f"Error adding comment to article ID {article_id}: {e}")
             return Response({"error": "Error adding comment"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class ArticleCommentsView(APIView):
+    permission_classes = []  
+
+    def get(self, request, article_id):
+        try:
+            article = get_object_or_404(Article, id=article_id)
+
+            comments = Comment.objects.filter(article=article)
+
+            serializer = CommentSerializer(comments, many=True)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"Error fetching comments for article ID {article_id}: {e}")
+            return Response({"error": "Error fetching comments"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class AddTagsToArticleView(APIView):
     permission_classes = [IsAuthenticated]

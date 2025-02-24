@@ -9,8 +9,18 @@ import { apiBaseURL } from '../../../constant/api';
 import { RootState } from '../redux/store';
 import { useSelector } from 'react-redux';
 import CommentSection from './CommentSection';
+import { getRandomImage } from '../../../utils';
+import { dummyProfileImages } from '../../../constant/images.';
 
 library.add(faHeart, faCommentAlt, faBookmark);
+
+type Comment = {
+  id: number;
+  username: string;
+  userId: number;
+  commentContent: string;
+  createdAt: string;
+}
 
 const postComment = async (token: string | null, newComment: string, articleId: number) => {
   try {
@@ -27,8 +37,7 @@ const postComment = async (token: string | null, newComment: string, articleId: 
       throw new Error("Failed to post comment");
     }
 
-    const data = await response.json();
-    return data;
+    return await response.json();
   } catch (error) {
     console.error("Error posting comment:", error);
     return null;
@@ -46,11 +55,23 @@ const toggleLike = async (token: string | null, articleId: number) => {
       throw new Error("Failed to toggle like");
     }
 
-    const data = await response.json();
-    return data;
+    return await response.json();
   } catch (error) {
     console.error("Error toggling like:", error);
     return null;
+  }
+};
+
+const listComments = async (articleId: number): Promise<Comment[]> => {
+  try {
+    const response = await fetch(`${apiBaseURL}/articles/${articleId}/list-comments/`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch comments");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    return [];
   }
 };
 
@@ -69,14 +90,19 @@ const PostPage: React.FC<PostDetailProps> = ({
   readTime = "3 min",
 }) => {
   const [newComment, setNewComment] = useState("");
-  const [commentsList, setCommentsList] = useState<string[]>([]);
+  const [commentsList, setCommentsList] = useState<Comment[]>([]);
   const [likeCount, setLikeCount] = useState(likes);
   const [isLiked, setIsLiked] = useState(false);
   const token = useSelector((state: RootState) => state.auth.accessToken);
 
   useEffect(() => {
-    setIsLiked(false);
-  }, []);
+    const fetchComments = async () => {
+      const fetchedComments = await listComments(articleId);
+      setCommentsList(fetchedComments);
+    };
+
+    fetchComments();
+  }, [articleId]);
 
   const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewComment(e.target.value);
@@ -85,12 +111,19 @@ const PostPage: React.FC<PostDetailProps> = ({
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newComment.trim()) {
-      setCommentsList((prevComments) => [...prevComments, newComment]);
-      setNewComment("");
-
       const response = await postComment(token, newComment, articleId);
       if (response) {
-        // Successfully posted comment, update UI here as needed
+        setCommentsList((prevComments) => [
+          ...prevComments,
+          {
+            id: response.id,
+            username: "You", // Placeholder, replace with actual user data
+            userId: 0, // Placeholder, replace with actual user ID
+            commentContent: newComment,
+            createdAt: new Date().toISOString(),
+          },
+        ]);
+        setNewComment("");
       }
     }
   };
@@ -98,11 +131,7 @@ const PostPage: React.FC<PostDetailProps> = ({
   const handleToggleLike = async () => {
     const response = await toggleLike(token, articleId);
     if (response) {
-      if (isLiked) {
-        setLikeCount((prev) => prev - 1);
-      } else {
-        setLikeCount((prev) => prev + 1);
-      }
+      setLikeCount(isLiked ? likeCount - 1 : likeCount + 1);
       setIsLiked(!isLiked);
     }
   };
@@ -150,7 +179,7 @@ const PostPage: React.FC<PostDetailProps> = ({
         </button>
         <div className="flex items-center space-x-2 cursor-pointer">
           <FontAwesomeIcon icon={faCommentAlt} className="text-gray-500" />
-          <span>{comments}</span>
+          <span>{commentsList.length}</span>
         </div>
         <div className="cursor-pointer">
           <FontAwesomeIcon icon={faBookmark} className={isBookmarked ? "text-yellow-500" : "text-gray-500"} />
@@ -162,13 +191,13 @@ const PostPage: React.FC<PostDetailProps> = ({
       <div className="mt-8 border-t pt-6">
         <h2 className="text-2xl font-semibold text-gray-900 mb-4">Comments</h2>
         <div className="space-y-4">
-          {commentsList.map((comment, index) => (
+          {commentsList.map((comment) => (
             <CommentSection
-              key={index}
-              profilePicture={authorImage} // Replace this with the actual profile picture if available
-              name={authorName} // Replace with commenter's name
-              date={updatedAt} // Replace with the actual comment date
-              content={comment}
+              key={comment.id}
+              profilePicture={getRandomImage(dummyProfileImages)}
+              name={comment.username}
+              date={new Date(comment.createdAt).toLocaleDateString()}
+              content={comment.commentContent}
             />
           ))}
         </div>

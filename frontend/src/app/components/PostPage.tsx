@@ -1,14 +1,60 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faCommentAlt, faBookmark } from '@fortawesome/free-solid-svg-icons';
 import { PostDetailProps } from '../../../constant/types';
+import { apiBaseURL } from '../../../constant/api';
+import { RootState } from '../redux/store';
+import { useSelector } from 'react-redux';
 
 library.add(faHeart, faCommentAlt, faBookmark);
 
+const postComment = async (token: string | null, newComment: string, articleId: number) => {
+  try {
+    const response = await fetch(`${apiBaseURL}/articles/${articleId}/comment/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+      body: JSON.stringify({ content: newComment }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to post comment");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error posting comment:", error);
+    return null;
+  }
+};
+
+const toggleLike = async (token: string | null, articleId: number) => {
+  try {
+    const response = await fetch(`${apiBaseURL}/articles/${articleId}/like/`, {
+      method: 'POST',
+      headers: { Authorization: token ? `Bearer ${token}` : "" },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to toggle like");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error toggling like:", error);
+    return null;
+  }
+};
+
 const PostPage: React.FC<PostDetailProps> = ({
+  articleId,
   title,
   description,
   authorName,
@@ -23,16 +69,40 @@ const PostPage: React.FC<PostDetailProps> = ({
 }) => {
   const [newComment, setNewComment] = useState("");
   const [commentsList, setCommentsList] = useState<string[]>([]);
+  const [likeCount, setLikeCount] = useState(likes);
+  const [isLiked, setIsLiked] = useState(false);
+  const token = useSelector((state: RootState) => state.auth.accessToken);
+
+  useEffect(() => {
+    setIsLiked(false);
+  }, []);
 
   const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewComment(e.target.value);
   };
 
-  const handleCommentSubmit = (e: React.FormEvent) => {
+  const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newComment.trim()) {
       setCommentsList((prevComments) => [...prevComments, newComment]);
       setNewComment("");
+
+      const response = await postComment(token, newComment, articleId);
+      if (response) {
+        // Successfully posted comment, you can update UI here as needed
+      }
+    }
+  };
+
+  const handleToggleLike = async () => {
+    const response = await toggleLike(token, articleId);
+    if (response) {
+      if (isLiked) {
+        setLikeCount((prev) => prev - 1); // Remove like
+      } else {
+        setLikeCount((prev) => prev + 1); // Add like
+      }
+      setIsLiked(!isLiked);
     }
   };
 
@@ -73,10 +143,10 @@ const PostPage: React.FC<PostDetailProps> = ({
       </div>
 
       <div className="flex items-center space-x-6 mb-6">
-        <div className="flex items-center space-x-2 cursor-pointer">
-          <FontAwesomeIcon icon={faHeart} className="text-red-500" />
-          <span>{likes}</span>
-        </div>
+        <button className="flex items-center space-x-2 cursor-pointer" onClick={handleToggleLike}>
+          <FontAwesomeIcon icon={faHeart} className={isLiked ? "text-red-500" : "text-gray-500"} />
+          <span>{likeCount}</span>
+        </button>
         <div className="flex items-center space-x-2 cursor-pointer">
           <FontAwesomeIcon icon={faCommentAlt} className="text-gray-500" />
           <span>{comments}</span>

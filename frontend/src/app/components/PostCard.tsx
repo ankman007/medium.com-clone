@@ -9,35 +9,19 @@ import {
   faFlag,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
-
-interface PostCardProps {
-  authorId: number;
-  authorName: string;
-  authorEmail: string;
-  authorImage: string;
-  title: string;
-  description: string;
-  image: string;
-  updatedAt: string;
-  likes: number;
-  comments: number;
-  isBookmarked: boolean;
-  seoSlug: string;
-  articleId: number;
-}
+import { PostCardProps } from "../../../constant/types";
 
 const PostCard: React.FC<PostCardProps> = ({
   authorId,
   authorName,
-  authorEmail,
   authorImage,
   title,
   description,
-  image,
+  thumbnailImage,
   updatedAt,
-  likes,
-  comments,
-  isBookmarked,
+  likes = 0,
+  comments = 0,
+  isBookmarked = false,
   seoSlug,
   articleId,
 }) => {
@@ -96,10 +80,10 @@ const PostCard: React.FC<PostCardProps> = ({
           </div>
         </div>
 
-        {image && (
+        {thumbnailImage && (
           <div className="w-full md:w-48 h-48 ml-0 md:ml-6 mt-4 md:mt-0 flex-shrink-0 relative">
             <Image
-              src={image}
+              src={thumbnailImage}
               alt="Description of the image"
               layout="fill"
               objectFit="cover"

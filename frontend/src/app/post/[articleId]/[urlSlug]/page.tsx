@@ -4,12 +4,12 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import PostPage from "../../../components/PostPage";
 import { formatDate } from "../../../../../utils";
+import { PostDetailProps } from "../../../../../constant/types";
 
 const PostDetailPage = () => {
   const { urlSlug, articleId } = useParams();
-  const [articleData, setArticleData] = useState(null);
+  const [articleData, setArticleData] = useState<PostDetailProps | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchArticleData = async () => {
@@ -18,7 +18,6 @@ const PostDetailPage = () => {
 
         if (urlSlug && typeof urlSlug === "string") {
           setLoading(true);
-          setError(null);
 
           try {
             const articlesResponse = await fetch(
@@ -41,29 +40,30 @@ const PostDetailPage = () => {
             const articlesData = await articlesResponse.json();
             
             const formattedArticle = {
-              thumbnail: "/thumbnail-1.jpg",
-              authorProfileImage: "/dummy-profile-1.jpg",
-              title: articlesData.title,
-              seoDescription: articlesData.seo_description,
+              articleId: articlesData.id,
+              authorId: articlesData.author_id,
               authorName: articlesData.author,
-              uploadedAt: formatDate(articlesData.updated_at),
-              readTime: "3 min", 
+              title: articlesData.title,
+              updatedAt: formatDate(articlesData.updated_at),
+              description: articlesData.seo_description,
               likes: articlesData.like_count,
               comments: articlesData.comments_count,
               isBookmarked: false,
               content: articlesData.content,
+              seoSlug: articlesData.slug,
+              readTime: "3 min", 
+              thumbnailImage: "/thumbnail-1.jpg",
+              authorImage: "/dummy-profile-1.jpg",
             };
 
             setArticleData(formattedArticle);
-          } catch (err) {
-            console.error("Error fetching article:", err);
-            setError(err);
+          } catch {
+            console.error("Error fetching article:");
           } finally {
             setLoading(false);
           }
         } else {
           setLoading(false);
-          setError(new Error("Invalid or missing seoSlug"));
         }
       }
     };
@@ -75,15 +75,11 @@ const PostDetailPage = () => {
     return <div>Loading article...</div>;
   }
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-
-  if (!articleData) {
+  if (!articleData && !loading) {
     return <div>Article data not found.</div>;
   }
 
-  return <PostPage {...articleData} />;
+  return articleData ? <PostPage {...articleData} /> : <div>Article data not found.</div>;
 };
 
 export default PostDetailPage;

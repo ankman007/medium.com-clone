@@ -1,10 +1,5 @@
-// redux/authSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-interface AuthState {
-  accessToken: string | null;
-  refreshToken: string | null;
-}
+import { AuthState } from '../../../../constant/types';
 
 const initialState: AuthState = {
   accessToken: typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null,

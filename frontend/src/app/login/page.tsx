@@ -1,6 +1,5 @@
 'use client';
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setTokens } from "../redux/slices/authSlice";
@@ -26,49 +25,47 @@ const Login = () => {
     setFormData({ ...formData, [event.target.id]: event.target.value });
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSubmit = useCallback(async (event?: React.FormEvent<HTMLFormElement>) => {
+    event?.preventDefault(); // Only prevent default if event exists
     setError(null);
-
+    
     if (!formData.email || !formData.password) {
       setError("Both email and password are required.");
       return;
     }
-
+  
     setLoading(true);
-
+  
     try {
       const response = await fetch("http://localhost:8000/user/login/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
+  
       const data = await response.json();
-
+  
       if (!response.ok) {
         throw new Error(data.msg || "Login failed. Please check your credentials.");
       }
-
+  
       const { access, refresh } = data.Token;
-
       dispatch(setTokens({ accessToken: access, refreshToken: refresh }));
-
       router.push("/");
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError((err as Error).message);
     } finally {
       setLoading(false);
     }
-  };
-
+  }, [formData, dispatch, router]);
   useEffect(() => {
     if (isDemoLogin) {
-      handleSubmit(new Event("submit") as React.FormEvent<HTMLFormElement>);
+      handleSubmit();
       setIsDemoLogin(false);
     }
-  }, [isDemoLogin, formData]);
-
+  }, [isDemoLogin, formData, handleSubmit]);
+  
+  
   const handleDemoLogin = () => {
     setFormData(demoLoginCredentials);
     setIsDemoLogin(true);
@@ -128,7 +125,7 @@ const Login = () => {
           Use Demo Login
         </button>
 
-        <div className="text-center text-gray-500">
+        {/* <div className="text-center text-gray-500">
           <p>
             <Link
               href="/sign-up"
@@ -136,7 +133,7 @@ const Login = () => {
               Sign Up
             </Link>
           </p>
-        </div>
+        </div> */}
       </div>
     </div>
   );

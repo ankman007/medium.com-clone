@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from "react";
+import Link from "next/link";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
@@ -60,9 +61,9 @@ const ResetPassword = () => {
         <div className="text-center text-gray-500">
           <p>
             Remember your password?{" "}
-            <a href="/login" className="text-black font-bold hover:underline">
-              Log In
-            </a>
+            <Link href="/login" className="text-black font-bold hover:underline">
+              Log In   
+              </Link>
           </p>
         </div>
       </div>

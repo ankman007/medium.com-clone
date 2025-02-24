@@ -10,7 +10,6 @@ const nextConfig: NextConfig = {
       bodySizeLimit: undefined,
       allowedOrigins: undefined,
     },
-    logging: 'verbose',
     serverComponentsExternalPackages: ['@fortawesome', '@tiptap', 'react-draft-wysiwyg'],
   },
   compiler: {

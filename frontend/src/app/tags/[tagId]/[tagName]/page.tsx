@@ -1,27 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { formatDate, getRandomimage, capitalize } from "../../../../../utils";
+import { formatDate, getRandomImage, capitalize } from "../../../../../utils";
 import { dummyProfileImages, thumbnailImages } from "../../../../../constant/images.";
 import PostCard from "@/app/components/PostCard";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
-
-interface Post {
-  author: string;
-  title: string;
-  description: string;
-  updatedAt: string;
-  likes: number;
-  comments: number;
-  isBookmarked: boolean;
-  authorImage: string;
-  thumbnailImage: string;
-  seoSlug: string;
-}
+import { PostCardProps } from "../../../../../constant/types";
 
 export default function TagsPages() {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<PostCardProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { tagName, tagId } = useParams();
@@ -45,16 +33,19 @@ export default function TagsPages() {
         }
 
         const articlesData = await articlesResponse.json();
-        const formattedArticles = (articlesData || []).map((article: any) => ({
-          author: article.author,
+        const formattedArticles = (articlesData || []).map((article: { id: number, author_id: number; author_name: string; author_email: string; title: string; seo_description: string; updated_at: string; like_count: number; seo_slug: string; }) => ({
+          authorId: article.author_id,
+          articleId: article.id,
+          authorName: article.author_name,
+          authorEmail: article.author_email,
           title: article.title,
           description: article.seo_description,
           updatedAt: formatDate(article.updated_at),
           likes: article.like_count,
           comments: 0,
           isBookmarked: false,
-          authorImage: getRandomimage(dummyProfileImages),
-          thumbnailImage: getRandomimage(thumbnailImages),
+          authorImage: getRandomImage(dummyProfileImages),
+          thumbnailImage: getRandomImage(thumbnailImages),
           seoSlug: article.seo_slug,
         }));
 
@@ -68,7 +59,7 @@ export default function TagsPages() {
     };
 
     fetchData();
-  }, [tagName, tagId]);
+  }, [tagName, tagId, token]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -82,7 +73,7 @@ export default function TagsPages() {
     <div className="bg-white text-black min-h-screen">
       <div className="container mx-auto px-4 lg:px-8 py-8">
         <h1 className="text-3xl font-bold mb-8">
-          {capitalize(tagName)} 
+          {tagName ? capitalize(tagName as string) : ""} 
           {/* <span className="block text-lg font-normal text-gray-500 mt-2">
             Handpicked stories about {tagName} from DevFlow.
           </span> */}
@@ -92,11 +83,13 @@ export default function TagsPages() {
             {posts.map((post, index) => (
               <div key={post.title + index}>
                 <PostCard
-                  author={post.author}
+                  authorId={post.authorId}
+                  articleId={post.articleId}
+                  authorName={post.authorName}
                   authorImage={post.authorImage}
                   title={post.title}
                   description={post.description}
-                  image={post.thumbnailImage}
+                  thumbnailImage={post.thumbnailImage}
                   updatedAt={post.updatedAt}
                   likes={post.likes}
                   comments={post.comments}

@@ -124,14 +124,12 @@ const Navbar = () => {
                     Help
                   </a>
                   <hr className="my-2" />
-                  <a
-                    href="#"
-                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
-                    onClick={handleLogout}
-                  >
+                  <button onClick={handleLogout} className="w-full flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
+                  <Link href={"/"} >
                     <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />{" "}
                     Sign Out
-                  </a>
+                  </Link>
+                  </button >
                 </div>
               )}
             </div>

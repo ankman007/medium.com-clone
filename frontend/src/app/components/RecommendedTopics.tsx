@@ -1,18 +1,9 @@
 'use client';
 import Link from 'next/link';
 import React from 'react';
+import { Tags } from '../../../constant/types';
 
-interface Tag {
-  name: string;
-  id: number;
-}
-
-interface RecommendedTopicsProps {
-  topics: Tag[];
-}
-
-const RecommendedTopics: React.FC<RecommendedTopicsProps> = ({ tags }) => {
-  console.log("tagsLLL::: ", tags)
+const RecommendedTopics: React.FC<Tags> = ({ tags }) => {
 
   return (
     <div className="bg-white rounded-lg p-4">

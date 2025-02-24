@@ -18,7 +18,6 @@ import Image from "@tiptap/extension-image";
 import TextAlign from "@tiptap/extension-text-align";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-// import apiBaseURL from "../../constant/api";
 import { apiBaseURL } from "../../../constant/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -94,7 +93,6 @@ export default function BlogEditor() {
       } else {
         alert("Failed to publish blog.");
       }
-      console.log("Response", response);
     } catch (error) {
       console.error("Error publishing blog:", error);
       alert("An error occurred.");
@@ -106,7 +104,6 @@ export default function BlogEditor() {
   return (
     <div className="max-w-5xl mx-auto p-6 bg-white text-black rounded-lg ">
       {" "}
-      {/* Darker background */}
       <h2 className="text-2xl font-bold mb-4 text-center">
         Create a New Blog Post
       </h2>

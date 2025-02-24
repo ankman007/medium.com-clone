@@ -1,25 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
 import PostCard from "../components/PostCard";
-import { formatDate, getRandomimage } from "../../../utils";
+import { formatDate, getRandomImage } from "../../../utils";
 import { dummyProfileImages, thumbnailImages } from "../../../constant/images.";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
-interface Post {
-  author: string;
-  title: string;
-  description: string;
-  updatedAt: string;
-  likes: number;
-  comments: number;
-  isBookmarked: boolean;
-  authorImage: string;
-  thumbnailImage: string;
-  seoSlug: string;
-}
+import { PostCardProps } from "../../../constant/types"; 
 
 export default function RecommendedPostsPage() {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<PostCardProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const token = useSelector((state: RootState) => state.auth.accessToken);
@@ -43,18 +32,34 @@ export default function RecommendedPostsPage() {
         }
 
         const articlesData = await articlesResponse.json();
-        const formattedArticles = (articlesData || []).map((article: any) => ({
-          author: article.author,
-          title: article.title,
-          description: article.seo_description,
-          updatedAt: formatDate(article.updated_at),
-          likes: article.like_count,
-          comments: 0,
-          isBookmarked: false,
-          authorImage: getRandomimage(dummyProfileImages),
-          thumbnailImage: getRandomimage(thumbnailImages),
-          seoSlug: article.seo_slug,
-        }));
+
+        const formattedArticles: PostCardProps[] = articlesData.map(
+          (article: {
+            id: number;
+            author_id: number;
+            author_name: string;
+            author_email: string;
+            title: string;
+            seo_description: string;
+            updated_at: string;
+            like_count: number;
+            seo_slug: string;
+          }) => ({
+            articleId: article.id,
+            authorId: Number(article.author_id),
+            authorName: article.author_name,
+            authorEmail: article.author_email,
+            title: article.title,
+            description: article.seo_description,
+            updatedAt: formatDate(article.updated_at),
+            likes: article.like_count,
+            comments: 0,
+            isBookmarked: false,
+            authorImage: getRandomImage(dummyProfileImages),
+            image: getRandomImage(thumbnailImages),
+            seoSlug: article.seo_slug,
+          })
+        );
 
         setPosts(formattedArticles);
       } catch (error) {
@@ -66,15 +71,10 @@ export default function RecommendedPostsPage() {
     };
 
     fetchData();
-  }, []);
+  }, [token]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="bg-white text-black min-h-screen">
@@ -87,20 +87,9 @@ export default function RecommendedPostsPage() {
         </h1>
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="flex-grow space-y-6">
-            {posts.map((post, index) => (
-              <div key={post.title + index}>
-                <PostCard
-                  author={post.author}
-                  authorImage={post.authorImage}
-                  title={post.title}
-                  description={post.description}
-                  image={post.thumbnailImage}
-                  updatedAt={post.updatedAt}
-                  likes={post.likes}
-                  comments={post.comments}
-                  isBookmarked={post.isBookmarked}
-                  seoSlug={post.seoSlug}
-                />
+            {posts.map((post) => (
+              <div key={post.articleId}>
+                <PostCard {...post} />
                 <hr />
               </div>
             ))}

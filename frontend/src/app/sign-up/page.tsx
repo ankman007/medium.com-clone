@@ -78,7 +78,7 @@ const Signup = () => {
       setSuccess("Signup successful! Redirecting...");
       setTimeout(() => (window.location.href = "/login"), 2000);
     } catch (err) {
-      setError(err.message);
+      setError((err as Error).message);
     } finally {
       setLoading(false);
     }

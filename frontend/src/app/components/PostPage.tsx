@@ -4,41 +4,27 @@ import Image from 'next/image';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faCommentAlt, faBookmark } from '@fortawesome/free-solid-svg-icons';
+import { PostDetailProps } from '../../../constant/types';
 
 library.add(faHeart, faCommentAlt, faBookmark);
-
-interface PostPageProps {
-  thumbnail: string;
-  title: string;
-  seoDescription: string;
-  authorName: string;
-  authorProfileImage: string;
-  uploadedAt: string;
-  readTime: string;
-  likes: number;
-  comments: number;
-  isBookmarked: boolean;
-  content: string;
-}
-
-const PostPage: React.FC<PostPageProps> = ({
-  thumbnail = "/thumbnail-1.jpg",
+const PostPage: React.FC<PostDetailProps> = ({
   title,
-  seoDescription,
+  description,
   authorName,
-  authorProfileImage = "/dummy-profile-1.jpg",
-  uploadedAt,
-  readTime = "3 min",
+  updatedAt,
   likes,
   comments,
   isBookmarked,
   content,
+  thumbnailImage = "/thumbnail-1.jpg",
+  authorImage = "/dummy-profile-1.jpg",
+  readTime = "3 min",
 }) => {
   return (
     <div className="bg-white max-w-3xl mx-auto p-6">
       <div className="relative w-full h-96 mb-6">
         <Image
-          src={thumbnail}
+          src={thumbnailImage}
           alt="Description of the image"
           layout="fill"
           objectFit="cover"
@@ -48,12 +34,12 @@ const PostPage: React.FC<PostPageProps> = ({
 
       <h1 className="text-4xl font-bold text-gray-900 mb-4">{title}</h1>
 
-      <p className="text-lg text-gray-600 mb-6">{seoDescription}</p>
+      <p className="text-lg text-gray-600 mb-6">{description}</p>
 
       <div className="flex items-center space-x-6 mb-6">
         <div className="relative w-12 h-12">
           <Image
-            src={authorProfileImage}
+            src={authorImage}
             alt="Description of the image"
             width={48}
             height={48}
@@ -65,7 +51,7 @@ const PostPage: React.FC<PostPageProps> = ({
           <div className="text-sm text-gray-600">
             <span className="cursor-pointer text-blue-500 hover:underline">Follow</span> ·
             <span className="mx-2">{readTime} read</span> ·
-            <span>{uploadedAt}</span>
+            <span>{updatedAt}</span>
           </div>
         </div>
       </div>

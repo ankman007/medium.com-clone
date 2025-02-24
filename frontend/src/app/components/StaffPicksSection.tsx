@@ -2,21 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-interface Article {
-  authorName: string;
-  authorEmail: string;
-  authorId: number;
-  authorProfileImage: string;
-  postTitle: string;
-  uploadedAt: string;
-  seoSlug: string;
-  articleId: number;
-}
-
-interface StaffPicksSectionProps {
-  articles: Article[];
-}
+import { StaffPicksSectionProps } from "../../../constant/types";
 
 const StaffPicksSection: React.FC<StaffPicksSectionProps> = ({ articles }) => {
   return (
@@ -31,7 +17,7 @@ const StaffPicksSection: React.FC<StaffPicksSectionProps> = ({ articles }) => {
             <Link href={`/${article.authorId}/${article.authorName}`} className="flex items-center space-x-2">
               <div className="relative w-8 h-8">
                 <Image
-                  src={article.authorProfileImage}
+                  src={article.authorImage}
                   alt="Description of the image"
                   width={32}
                   height={32}
@@ -44,11 +30,11 @@ const StaffPicksSection: React.FC<StaffPicksSectionProps> = ({ articles }) => {
 
             <Link href={`/post/${article.articleId}/${article.seoSlug}`}> 
               <h3 className="text-md font-semibold text-gray-900 hover:cursor-pointer">
-                {article.postTitle}
+                {article.title}
               </h3>
             </Link>
 
-            <span className="text-xs text-gray-500">{article.uploadedAt}</span>
+            <span className="text-xs text-gray-500">{article.updatedAt}</span>
           </div>
         ))}
         </div>

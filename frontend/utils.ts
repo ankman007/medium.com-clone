@@ -1,4 +1,4 @@
-export const getRandomimage = (imageArray: string[]) => {
+export const getRandomImage = (imageArray: string[]) => {
     const randomIndex = Math.floor(Math.random() * imageArray.length);
     return imageArray[randomIndex];
   }

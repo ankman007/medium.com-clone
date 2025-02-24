@@ -8,6 +8,7 @@ import { PostDetailProps } from '../../../constant/types';
 import { apiBaseURL } from '../../../constant/api';
 import { RootState } from '../redux/store';
 import { useSelector } from 'react-redux';
+import CommentSection from './CommentSection';
 
 library.add(faHeart, faCommentAlt, faBookmark);
 
@@ -19,7 +20,7 @@ const postComment = async (token: string | null, newComment: string, articleId: 
         'Content-Type': 'application/json',
         Authorization: token ? `Bearer ${token}` : "",
       },
-      body: JSON.stringify({ content: newComment }),
+      body: JSON.stringify({ comment_content: newComment }),
     });
 
     if (!response.ok) {
@@ -89,7 +90,7 @@ const PostPage: React.FC<PostDetailProps> = ({
 
       const response = await postComment(token, newComment, articleId);
       if (response) {
-        // Successfully posted comment, you can update UI here as needed
+        // Successfully posted comment, update UI here as needed
       }
     }
   };
@@ -98,9 +99,9 @@ const PostPage: React.FC<PostDetailProps> = ({
     const response = await toggleLike(token, articleId);
     if (response) {
       if (isLiked) {
-        setLikeCount((prev) => prev - 1); // Remove like
+        setLikeCount((prev) => prev - 1);
       } else {
-        setLikeCount((prev) => prev + 1); // Add like
+        setLikeCount((prev) => prev + 1);
       }
       setIsLiked(!isLiked);
     }
@@ -162,9 +163,13 @@ const PostPage: React.FC<PostDetailProps> = ({
         <h2 className="text-2xl font-semibold text-gray-900 mb-4">Comments</h2>
         <div className="space-y-4">
           {commentsList.map((comment, index) => (
-            <div key={index} className="bg-gray-100 p-4 rounded-lg">
-              <p className="text-gray-800">{comment}</p>
-            </div>
+            <CommentSection
+              key={index}
+              profilePicture={authorImage} // Replace this with the actual profile picture if available
+              name={authorName} // Replace with commenter's name
+              date={updatedAt} // Replace with the actual comment date
+              content={comment}
+            />
           ))}
         </div>
 

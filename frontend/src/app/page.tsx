@@ -10,8 +10,9 @@ import { getRandomImage, formatDate } from "../../utils";
 import { RootState } from "./redux/store";
 import { PostCardProps, Tag } from "../../constant/types";
 
-
-const fetchArticles = async (token: string | null): Promise<PostCardProps[]> => {
+const fetchArticles = async (
+  token: string | null
+): Promise<PostCardProps[]> => {
   const response = await fetch("http://localhost:8000/articles/", {
     headers: { Authorization: token ? `Bearer ${token}` : "" },
   });
@@ -56,7 +57,7 @@ const mapArticleData = (article: {
   seoSlug: article.seo_slug,
 });
 
-const mapTagData = (tag: { id: number; name: string; }): Tag => ({
+const mapTagData = (tag: { id: number; name: string }): Tag => ({
   id: tag.id,
   name: tag.name,
 });
@@ -103,7 +104,7 @@ export default function Home() {
     updatedAt: post.updatedAt,
     seoSlug: post.seoSlug,
   }));
-  
+
   return (
     <div>
       {isLoggedIn ? (

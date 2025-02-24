@@ -20,19 +20,30 @@ class ArticleSerializer(serializers.ModelSerializer):
         return Like.objects.filter(article=obj).count()
 
 class CommentSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)  
+    user_name = serializers.CharField(source='user.name', read_only=True)
+    user_id = serializers.CharField(source='user.id', read_only=True)
+    user_email = serializers.EmailField(source='user.email', read_only=True)
+    article_id = serializers.CharField(source='article.id', read_only=True)
 
     class Meta:
         model = Comment
-        fields = ['id', 'user', 'comment_content', 'created_at', 'article']
+        fields = ['id', 'user_name', 'user_id', 'user_email', 'comment_content', 'created_at', 'article_id']
         read_only_fields = ['created_at']
 
+
 class LikeSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)  
+    user_name = serializers.CharField(source='user.name', read_only=True)
+    user_email = serializers.EmailField(source='user.email', read_only=True)
+    article_title = serializers.CharField(source='article.title', read_only=True)
+    like_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Like
-        fields = ['id', 'user', 'article']
+        fields = ['id', 'user_name', 'user_email', 'user_id', 'article_id', 'article_title', 'like_count']
+    
+    def get_like_count(self, obj):
+        return Like.objects.filter(article=obj.article).count()
+
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:

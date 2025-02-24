@@ -3,10 +3,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser, FormParser
+from loguru import logger
 from .serializers import ArticleSerializer, CommentSerializer, ImageSerializer, LikeSerializer, TagSerializer
 from .models import Article, Comment, Like, Tag
-from loguru import logger
-from rest_framework.parsers import MultiPartParser, FormParser
 from django.contrib.auth import get_user_model
 
 class ArticleListView(APIView):
@@ -106,12 +106,20 @@ class ToggleLikeView(APIView):
             
             if not created:
                 like.delete()
-                return Response({"message": "Like removed"}, status=status.HTTP_200_OK)
+                return Response({
+                    "message": "Like removed",
+                    "like_info": LikeSerializer(like).data
+                }, status=status.HTTP_200_OK)
             
-            return Response({"message": "Article liked"}, status=status.HTTP_201_CREATED)
+            return Response({
+                "message": "Article liked",
+                "like_info": LikeSerializer(like).data
+            }, status=status.HTTP_201_CREATED)
+        
         except Exception as e:
             logger.error(f"Error toggling like for article ID {article_id}: {e}")
             return Response({"error": "Error toggling like"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class AddCommentView(APIView):
     permission_classes = [IsAuthenticated]
@@ -130,7 +138,6 @@ class AddCommentView(APIView):
         except Exception as e:
             logger.error(f"Error adding comment to article ID {article_id}: {e}")
             return Response({"error": "Error adding comment"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class AddTagsToArticleView(APIView):
     permission_classes = [IsAuthenticated]
@@ -174,7 +181,6 @@ class CreateTagView(APIView):
             logger.error(f"Error creating tag: {e}")
             return Response({"error": "Error creating tag"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-
 class GetPostsByUserView(APIView):
     def get(self, request, id):
         try:

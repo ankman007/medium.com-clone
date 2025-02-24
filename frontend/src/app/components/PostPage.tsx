@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,6 +7,7 @@ import { faHeart, faCommentAlt, faBookmark } from '@fortawesome/free-solid-svg-i
 import { PostDetailProps } from '../../../constant/types';
 
 library.add(faHeart, faCommentAlt, faBookmark);
+
 const PostPage: React.FC<PostDetailProps> = ({
   title,
   description,
@@ -20,6 +21,21 @@ const PostPage: React.FC<PostDetailProps> = ({
   authorImage = "/dummy-profile-1.jpg",
   readTime = "3 min",
 }) => {
+  const [newComment, setNewComment] = useState("");
+  const [commentsList, setCommentsList] = useState<string[]>([]);
+
+  const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewComment(e.target.value);
+  };
+
+  const handleCommentSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newComment.trim()) {
+      setCommentsList((prevComments) => [...prevComments, newComment]);
+      setNewComment("");
+    }
+  };
+
   return (
     <div className="bg-white max-w-3xl mx-auto p-6">
       <div className="relative w-full h-96 mb-6">
@@ -57,7 +73,6 @@ const PostPage: React.FC<PostDetailProps> = ({
       </div>
 
       <div className="flex items-center space-x-6 mb-6">
-        
         <div className="flex items-center space-x-2 cursor-pointer">
           <FontAwesomeIcon icon={faHeart} className="text-red-500" />
           <span>{likes}</span>
@@ -71,13 +86,35 @@ const PostPage: React.FC<PostDetailProps> = ({
         </div>
       </div>
 
-      <div
-        className="text-gray-800 text-lg leading-relaxed space-y-6"
-        dangerouslySetInnerHTML={{ __html: content }}
+      <div className="text-gray-800 text-lg leading-relaxed space-y-6" dangerouslySetInnerHTML={{ __html: content }} />
+
+      <div className="mt-8 border-t pt-6">
+        <h2 className="text-2xl font-semibold text-gray-900 mb-4">Comments</h2>
+        <div className="space-y-4">
+          {commentsList.map((comment, index) => (
+            <div key={index} className="bg-gray-100 p-4 rounded-lg">
+              <p className="text-gray-800">{comment}</p>
+            </div>
+          ))}
+        </div>
+
+        <form onSubmit={handleCommentSubmit} className="mt-6">
+          <input
+            type="text"
+            value={newComment}
+            onChange={handleCommentChange}
+            placeholder="Add a comment..."
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          
+          <button
+            type="submit"
+            className="mt-3 w-full bg-black text-white p-3 rounded-lg hover:bg-gray-800 transition"
+          >
+            Post Comment
+          </button>
+        </form>
       </div>
-      
+    </div>
   );
 };
 

@@ -1,0 +1,91 @@
+"use client";
+import { useEffect, useState } from "react";
+import PostCard from "@/app/components/PostCard";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/redux/store";
+import withAuth from "@/app/hoc/withAuth";
+import { formatDate, getRandomImage, capitalize } from "../../../utils";
+import { dummyProfileImages, thumbnailImages } from "../../../constant/images.";
+import { UserPostPropsArray, UserDetailsProps } from "../../../constant/types";
+import Image from "next/image";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit } from "@fortawesome/free-solid-svg-icons";
+
+function UserProfile() {
+  const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState<UserPostPropsArray | null>(null);
+  const [userDetails, setUserDetails] = useState<UserDetailsProps | null>(null);
+
+  const token = useSelector((state: RootState) => state.auth.accessToken);
+  const userInfo = useSelector((state: RootState) => state.user);
+  const userPosts = useSelector((state: RootState) => state.userPosts.posts);
+
+  useEffect(() => {
+    if (token) {
+      setUserDetails({
+        ...userInfo,
+        id: Number(userInfo.id),
+      });
+
+      setPosts(userPosts);
+      setLoading(false);
+    }
+  }, [token, userPosts, userInfo]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div className="bg-white text-black min-h-screen">
+      <div className="container mx-auto px-4 lg:px-8 py-8">
+        <div className="flex items-center gap-4 mb-8">
+          <Image
+            src={getRandomImage(dummyProfileImages)}
+            alt="Profile"
+            className="w-12 h-12 rounded-full"
+            width={40}
+            height={40}
+          />
+
+          <h1 className="text-3xl font-bold">
+            {userDetails?.name ? capitalize(userDetails?.name as string) : ""}
+            <span className="block text-lg font-normal text-gray-500">
+              {userDetails?.email}
+            </span>
+          </h1>
+
+          <div className="flex items-center cursor-pointer">
+            <FontAwesomeIcon icon={faEdit} className="text-black" />
+          </div>
+        </div>
+
+        <div className="flex flex-col lg:flex-row gap-8">
+          <div className="flex-grow space-y-6">
+            {posts?.map((post) => (
+              <div key={post.id}>
+                <PostCard
+                  authorId={post.author_id}
+                  articleId={post.id}
+                  authorName={post.author_name}
+                  authorImage={getRandomImage(dummyProfileImages)}
+                  title={post.title}
+                  description={post.seo_description}
+                  thumbnailImage={getRandomImage(thumbnailImages)}
+                  updatedAt={formatDate(post.updated_at)}
+                  likes={0}
+                  comments={0}
+                  isBookmarked={false}
+                  seoSlug={post.seo_slug}
+                />
+                <hr />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default withAuth(UserProfile);

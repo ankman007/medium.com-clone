@@ -43,3 +43,23 @@ export type AuthState = {
 export type LayoutProps = {
   children: React.ReactNode;
 }
+
+export type UserDetailsProps = {
+  id: number;
+  email: string;
+  name: string;
+};
+
+export type UserPostProps = {
+  id: number;
+  author_name: string;
+  author_id: number;
+  author_email: string;
+  title: string;
+  content: string;
+  seo_description: string;
+  updated_at: string;
+  seo_slug: string;
+};
+
+export type UserPostPropsArray = UserPostProps[];

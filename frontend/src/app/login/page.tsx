@@ -51,6 +51,7 @@ const Login = () => {
   
       const { access, refresh } = data.Token;
       dispatch(setTokens({ accessToken: access, refreshToken: refresh }));
+
       router.push("/");
     } catch (err) {
       setError((err as Error).message);

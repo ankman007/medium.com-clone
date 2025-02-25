@@ -13,12 +13,12 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) =>
 
     useEffect(() => {
       if (!token) {
-          router.push(`/login?redirect=${pathname}`);
+          router.push(`/?redirect=${pathname}`);
       }
     }, [token, router, pathname]);
 
     if (!token) {
-      return null; // Prevent component from rendering while redirecting
+      return null;
     }
 
     return <WrappedComponent {...props} />;

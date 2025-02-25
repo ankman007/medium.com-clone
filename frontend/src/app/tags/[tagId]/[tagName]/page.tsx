@@ -108,4 +108,4 @@ function TagsPages() {
   );
 }
 
-export default withAuth(TagsPages);
+export default withAuth(TagsPages); 

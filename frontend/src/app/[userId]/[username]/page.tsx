@@ -8,8 +8,9 @@ import PostCard from "@/app/components/PostCard";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 import { fetchWithAuth } from "../../../../utils";
+import withAuth from "@/app/hoc/withAuth";
 
-export default function TagsPages() {
+function UserPostPages() {
   const [posts, setPosts] = useState<PostCardProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -108,3 +109,5 @@ export default function TagsPages() {
     </div>
   );
 }
+
+export default withAuth(UserPostPages);

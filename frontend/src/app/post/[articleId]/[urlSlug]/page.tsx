@@ -6,6 +6,7 @@ import PostPage from "../../../components/PostPage";
 import { formatDate } from "../../../../../utils";
 import { PostDetailProps } from "../../../../../constant/types";
 import { fetchWithAuth } from "../../../../../utils";
+import withAuth from "@/app/hoc/withAuth";
 
 const PostDetailPage = () => {
   const { urlSlug, articleId } = useParams();
@@ -83,4 +84,4 @@ const PostDetailPage = () => {
   return articleData ? <PostPage {...articleData} /> : <div>Article data not found.</div>;
 };
 
-export default PostDetailPage;
+export default withAuth(PostDetailPage);

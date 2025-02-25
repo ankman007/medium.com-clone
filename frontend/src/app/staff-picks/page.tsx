@@ -7,8 +7,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 import { PostCardProps } from "../../../constant/types"; 
 import { fetchWithAuth } from "../../../utils";
+import withAuth from "../hoc/withAuth";
 
-export default function RecommendedPostsPage() {
+function RecommendedPostsPage() {
   const [posts, setPosts] = useState<PostCardProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -100,3 +101,5 @@ export default function RecommendedPostsPage() {
     </div>
   );
 }
+
+export default withAuth(RecommendedPostsPage);

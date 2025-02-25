@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import PostPage from "../../../components/PostPage";
 import { formatDate } from "../../../../../utils";
 import { PostDetailProps } from "../../../../../constant/types";
+import { fetchWithAuth } from "../../../../../utils";
 
 const PostDetailPage = () => {
   const { urlSlug, articleId } = useParams();
@@ -20,7 +21,7 @@ const PostDetailPage = () => {
           setLoading(true);
 
           try {
-            const articlesResponse = await fetch(
+            const articlesResponse = await fetchWithAuth(
               `http://localhost:8000/articles/${articleId}`,
               {
                 headers: {

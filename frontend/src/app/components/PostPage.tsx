@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import CommentSection from './CommentSection';
 import { getRandomImage } from '../../../utils';
 import { dummyProfileImages } from '../../../constant/images.';
+import { fetchWithAuth } from '../../../utils';
 
 library.add(faHeart, faCommentAlt, faBookmark);
 
@@ -24,7 +25,7 @@ type Comment = {
 
 const postComment = async (token: string | null, newComment: string, articleId: number) => {
   try {
-    const response = await fetch(`${apiBaseURL}/articles/${articleId}/comment/`, {
+    const response = await fetchWithAuth(`${apiBaseURL}/articles/${articleId}/comment/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -46,7 +47,7 @@ const postComment = async (token: string | null, newComment: string, articleId: 
 
 const toggleLike = async (token: string | null, articleId: number) => {
   try {
-    const response = await fetch(`${apiBaseURL}/articles/${articleId}/like/`, {
+    const response = await fetchWithAuth(`${apiBaseURL}/articles/${articleId}/like/`, {
       method: 'POST',
       headers: { Authorization: token ? `Bearer ${token}` : "" },
     });
@@ -64,7 +65,7 @@ const toggleLike = async (token: string | null, articleId: number) => {
 
 const listComments = async (articleId: number): Promise<Comment[]> => {
   try {
-    const response = await fetch(`${apiBaseURL}/articles/${articleId}/list-comments/`);
+    const response = await fetchWithAuth(`${apiBaseURL}/articles/${articleId}/list-comments/`);
     if (!response.ok) {
       throw new Error("Failed to fetch comments");
     }

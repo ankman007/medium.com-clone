@@ -7,20 +7,25 @@ from account.renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import BasePermission
+from rest_framework_simplejwt.views import TokenRefreshView
     
 class IsAdminUser(BasePermission):
     def has_permission(self, request, view):
         return request.user and request.user.is_authenticated and request.user.role == 'admin'
     
-class TokenRefreshView():
+class TokenService:
+    @staticmethod
     def get_tokens_for_user(user):
         refresh = RefreshToken.for_user(user)
-
         return {
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
-        
+class CustomTokenRefreshView(TokenRefreshView):
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        response.data['message'] = 'Token refreshed successfully!'
+        return response
 class TokenVerifyView(APIView):
     permission_classes = [IsAuthenticated]
     
@@ -36,7 +41,7 @@ class UserRegistrationView(APIView):
         serializer = UserRegistrationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        token = TokenRefreshView.get_tokens_for_user(user)
+        token = TokenService.get_tokens_for_user(user)
         return Response({'token': token, 'message': 'User registration successful.'}, status=status.HTTP_201_CREATED)
         
 class UserLoginView(APIView):
@@ -49,7 +54,7 @@ class UserLoginView(APIView):
         user = authenticate(request, email=email, password=password)
 
         if user is not None:
-            token = TokenRefreshView.get_tokens_for_user(user)
+            token = TokenService.get_tokens_for_user(user)
             return Response({'Token': token, 'msg': 'Login Success'}, status=status.HTTP_200_OK)
         else:
             return Response(

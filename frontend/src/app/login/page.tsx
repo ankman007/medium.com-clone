@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setTokens } from "../redux/slices/authSlice";
+import { fetchWithAuth } from "../../../utils";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -37,7 +38,7 @@ const Login = () => {
     setLoading(true);
   
     try {
-      const response = await fetch("http://localhost:8000/user/login/", {
+      const response = await fetchWithAuth("http://localhost:8000/user/login/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

@@ -20,6 +20,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { apiBaseURL } from "../../../constant/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { fetchWithAuth } from "../../../utils";
 import {
   faBold,
   faItalic,
@@ -74,7 +75,7 @@ export default function BlogEditor() {
       tags: tags,
     };
     try {
-      const response = await fetch(`${apiBaseURL}articles/create/`, {
+      const response = await fetchWithAuth(`${apiBaseURL}articles/create/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

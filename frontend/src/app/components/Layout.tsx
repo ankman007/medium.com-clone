@@ -10,10 +10,11 @@ import { setUserPosts } from "../redux/slices/userPostSlice";
 import { fetchAllPosts } from "../redux/slices/postsSlice";
 import { fetchAllTags } from "../redux/slices/tagsSlice";
 import { RootState } from "../redux/store";
+import { fetchWithAuth } from "../../../utils";
 
 const fetchUserDetail = async (token: string) => {
   try {
-    const response = await fetch(`${apiBaseURL}/user/profile/`, {
+    const response = await fetchWithAuth(`${apiBaseURL}/user/profile/`, {
       method: "GET",
       headers: { Authorization: token ? `Bearer ${token}` : "" },
     });
@@ -29,7 +30,7 @@ const fetchUserDetail = async (token: string) => {
 
 const fetchUserPosts = async (token: string, userId: string) => {
   try {
-    const response = await fetch(`${apiBaseURL}/articles/users/${userId}/`, {
+    const response = await fetchWithAuth(`${apiBaseURL}/articles/users/${userId}/`, {
       method: "GET",
       headers: { Authorization: token ? `Bearer ${token}` : "" },
     });

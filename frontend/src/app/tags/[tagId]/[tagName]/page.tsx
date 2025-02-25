@@ -7,8 +7,10 @@ import PostCard from "@/app/components/PostCard";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 import { PostCardProps } from "../../../../../constant/types";
+import withAuth from "@/app/hoc/withAuth";
+import { fetchWithAuth } from "../../../../../utils";
 
-export default function TagsPages() {
+function TagsPages() {
   const [posts, setPosts] = useState<PostCardProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -19,7 +21,7 @@ export default function TagsPages() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const articlesResponse = await fetch(
+        const articlesResponse = await fetchWithAuth(
           `http://localhost:8000/articles/tags/${tagId}`,
           {
             headers: {
@@ -105,3 +107,5 @@ export default function TagsPages() {
     </div>
   );
 }
+
+export default withAuth(TagsPages);

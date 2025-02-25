@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from "react";
 import Link from "next/link";
+import { fetchWithAuth } from "../../../utils";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -59,7 +60,7 @@ const Signup = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8000/user/register/", {
+      const response = await fetchWithAuth("http://localhost:8000/user/register/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

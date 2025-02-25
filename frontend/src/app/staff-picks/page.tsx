@@ -6,6 +6,7 @@ import { dummyProfileImages, thumbnailImages } from "../../../constant/images.";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 import { PostCardProps } from "../../../constant/types"; 
+import { fetchWithAuth } from "../../../utils";
 
 export default function RecommendedPostsPage() {
   const [posts, setPosts] = useState<PostCardProps[]>([]);
@@ -18,7 +19,7 @@ export default function RecommendedPostsPage() {
       try {
         setLoading(true);
 
-        const articlesResponse = await fetch(
+        const articlesResponse = await fetchWithAuth(
           "http://localhost:8000/articles/",
           {
             headers: {

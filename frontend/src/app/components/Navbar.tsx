@@ -16,6 +16,8 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { clearTokens } from "../redux/slices/authSlice";
+import { clearUserPosts } from "../redux/slices/userPostSlice";
+import { clearUserDetails } from "../redux/slices/userSlice";
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -40,6 +42,8 @@ const Navbar = () => {
 
   const handleLogout = () => {
     dispatch(clearTokens());
+    dispatch(clearUserDetails());
+    dispatch(clearUserPosts());
     setIsDropdownOpen(false);
   };
 

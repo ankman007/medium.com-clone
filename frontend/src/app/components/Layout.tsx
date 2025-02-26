@@ -12,6 +12,7 @@ import { fetchAllTags } from "../redux/slices/tagsSlice";
 import { RootState } from "../redux/store";
 import { fetchWithAuth } from "../../../utils";
 import { clearTokens } from "../redux/slices/authSlice"; 
+import Head from "next/head";
 
 const fetchUserDetail = async (token: string) => {
   try {
@@ -103,6 +104,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div>
+      <Head>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <Navbar />
       <main>{children}</main>
     </div>

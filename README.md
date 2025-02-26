@@ -1,26 +1,20 @@
-# DevFlow: CMS
+# Project Description 
+DevFlow CMS is web content management system that allows for hassle-free way to publish and manage content.
+  
+[Project Link](https://devflow-cms.vercel.app/)
 
-Web content management system that allows for hassle-free way to publish and manage content.
+[Swagger API Documentation](http://localhost:8000/swagger/)
 
-## API Endpoints
+## Technology used
 
-### User Management
-- **Register User**: `POST /user/register/`
-- **Login User**: `POST /user/login/`
-- **User Profile**: `GET /user/profile/`
-- **Change Password**: `POST /user/change-password/`
-- **Send Password Reset Email**: `POST /user/reset-password-email/`
-- **Reset Password**: `POST /user/reset-password/<uid>/<token>/`
-- **Logout**: `POST /user/logout/`
+- Django
+- PostgreSQL
+- Docker
+- Next JS
+- Redux
+- Tailwind
 
-### Article Management
-- **List Articles**: `GET /articles/`
-- **Create Article**: `POST /articles/create/`
-- **Article Details**: `GET /articles/<int:id>/`
-- **Update Article**: `PUT /articles/<int:id>/update/`
-- **Delete Article**: `DELETE /articles/<int:id>/delete/`
-
-## Setup Instructions
+## To contribute to this project
 
 ### For Backend
 1. cd into \backend directory
@@ -33,4 +27,4 @@ Web content management system that allows for hassle-free way to publish and man
 2. Install required dependencies through command `npm install`
 3. Run `npm run dev`
 
-Now both backend and frontend for CMS should be live at localhost:8000 (backend) and localhost:3000 (frontend).
+Both backend and frontend for the project should be live at localhost:8000 and localhost:3000 respectively.

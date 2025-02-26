@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
@@ -20,11 +20,10 @@ import { clearTokens } from "../redux/slices/authSlice";
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useDispatch();
 
   const accessToken = useSelector((state: RootState) => state.auth.accessToken);
-
   const isLoggedIn = !!accessToken;
 
   useEffect(() => {
@@ -36,13 +35,33 @@ const Navbar = () => {
   }, [accessToken]);
 
   const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+    setIsDropdownOpen((prev) => !prev);
   };
 
   const handleLogout = () => {
     dispatch(clearTokens());
     setIsDropdownOpen(false);
   };
+
+  // Handle clicks outside the dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    if (isDropdownOpen) {
+      document.addEventListener("click", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [isDropdownOpen]);
 
   if (isLoading) {
     return <div></div>;
@@ -85,10 +104,10 @@ const Navbar = () => {
               <FontAwesomeIcon icon={faBell} className="text-gray-600" />
             </div>
 
-            <div className="relative">
+            <div className="relative" ref={dropdownRef}>
               <Image
                 src="/dummy-profile-1.jpg"
-                alt="Description of the image"
+                alt="Profile Picture"
                 width={40}
                 height={40}
                 className="rounded-full object-cover cursor-pointer"
@@ -97,12 +116,13 @@ const Navbar = () => {
 
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg py-2">
-                  <a
-                    href="#"
-                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  <button
+                    className="w-full flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
                   >
+                    <Link href={"/profile"}>
                     <FontAwesomeIcon icon={faUser} className="mr-2" /> Profile
-                  </a>
+                    </Link>
+                  </button>
                   <a
                     href="#"
                     className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
@@ -124,12 +144,15 @@ const Navbar = () => {
                     Help
                   </a>
                   <hr className="my-2" />
-                  <button onClick={handleLogout} className="w-full flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
-                  <Link href={"/"} >
-                    <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />{" "}
-                    Sign Out
-                  </Link>
-                  </button >
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    <Link href={"/"}>
+                      <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />{" "}
+                      Sign Out
+                    </Link>
+                  </button>
                 </div>
               )}
             </div>

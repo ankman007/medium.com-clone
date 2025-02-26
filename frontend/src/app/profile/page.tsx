@@ -10,6 +10,7 @@ import { UserPostPropsArray, UserDetailsProps } from "../../../constant/types";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import PageListSkeleton from "@/app/skeletons/PostListSkeleton"
 
 function UserProfile() {
   const [loading, setLoading] = useState(true);
@@ -33,7 +34,7 @@ function UserProfile() {
   }, [token, userPosts, userInfo]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <PageListSkeleton/>;
   }
 
   return (

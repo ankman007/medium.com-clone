@@ -7,6 +7,7 @@ import { formatDate } from "../../../../../utils";
 import { PostDetailProps } from "../../../../../constant/types";
 import { fetchWithAuth } from "../../../../../utils";
 import withAuth from "@/app/hoc/withAuth";
+import ArticlePageSkeleton from "@/app/skeletons/ArticlePageSkeleton";
 
 const PostDetailPage = () => {
   const { urlSlug, articleId } = useParams();
@@ -74,7 +75,7 @@ const PostDetailPage = () => {
   }, [urlSlug, articleId]);
 
   if (loading) {
-    return <div>Loading article...</div>;
+    return <ArticlePageSkeleton />;
   }
 
   if (!articleData && !loading) {

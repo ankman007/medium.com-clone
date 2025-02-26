@@ -8,6 +8,7 @@ import { RootState } from "@/app/redux/store";
 import { PostCardProps } from "../../../constant/types"; 
 import { fetchWithAuth } from "../../../utils";
 import withAuth from "../hoc/withAuth";
+import PageListSkeleton from "@/app/skeletons/PostListSkeleton"
 
 function RecommendedPostsPage() {
   const [posts, setPosts] = useState<PostCardProps[]>([]);
@@ -75,7 +76,7 @@ function RecommendedPostsPage() {
     fetchData();
   }, [token]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <PageListSkeleton />;
   if (error) return <div>{error}</div>;
 
   return (

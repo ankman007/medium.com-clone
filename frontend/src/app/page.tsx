@@ -8,6 +8,7 @@ import HomePage from "./components/HomePage";
 import { dummyProfileImages, thumbnailImages } from "../../constant/images.";
 import { getRandomImage, formatDate } from "../../utils";
 import { RootState } from "./redux/store";
+import PostPageSkeleton from "@/app/skeletons/PostPageSkeleton"
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -25,7 +26,7 @@ export default function Home() {
     }
   }, [posts, recommendedTags]);
 
-  if (loading) return <div className="text-center py-4">Loading...</div>;
+  if (loading) return <PostPageSkeleton/>;
 
   const staffPicksArticles = posts.slice(-3).map((post) => ({
     articleId: post.id,

@@ -9,6 +9,7 @@ import { RootState } from "@/app/redux/store";
 import { PostCardProps } from "../../../../../constant/types";
 import withAuth from "@/app/hoc/withAuth";
 import { fetchWithAuth } from "../../../../../utils";
+import PageListSkeleton from "@/app/skeletons/PostListSkeleton"
 
 function TagsPages() {
   const [posts, setPosts] = useState<PostCardProps[]>([]);
@@ -64,7 +65,7 @@ function TagsPages() {
   }, [tagName, tagId, token]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <PageListSkeleton/>;
   }
 
   if (error) {

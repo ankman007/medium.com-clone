@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 import { fetchWithAuth } from "../../../../utils";
 import withAuth from "@/app/hoc/withAuth";
+import PageListSkeleton from "@/app/skeletons/PostListSkeleton"
 
 function UserPostPages() {
   const [posts, setPosts] = useState<PostCardProps[]>([]);
@@ -66,7 +67,7 @@ function UserPostPages() {
   }, [username, userId, token]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <PageListSkeleton/>;
   }
 
   if (error) {

@@ -21,6 +21,7 @@ import { RootState } from "../redux/store";
 import { apiBaseURL } from "../../../constant/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { fetchWithAuth } from "../../../utils";
+import BlogPublishSkeleton from "../skeletons/BlogPublishSkeleton";
 import {
   faBold,
   faItalic,
@@ -100,7 +101,7 @@ export default function BlogEditor() {
     }
   };
 
-  if (!editor) return <p>Loading editor...</p>;
+  if (!editor) return <BlogPublishSkeleton/>;
 
   return (
     <div className="max-w-5xl mx-auto p-6 bg-white text-black rounded-lg ">

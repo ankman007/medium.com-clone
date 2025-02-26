@@ -28,8 +28,11 @@ const userPostsSlice = createSlice({
     removeUserPost: (state, action: PayloadAction<string>) => {
       state.posts = state.posts.filter((post) => post.id !== action.payload);
     },
+    clearUserPosts: (state) => {
+      state.posts = [];
+    },
   },
 });
 
-export const { setUserPosts, addUserPost, removeUserPost } = userPostsSlice.actions;
+export const { setUserPosts, addUserPost, removeUserPost, clearUserPosts } = userPostsSlice.actions;
 export default userPostsSlice.reducer;

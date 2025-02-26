@@ -5,12 +5,13 @@ import type { AppDispatch } from "../redux/store";
 import Navbar from "./Navbar";
 import { LayoutProps } from "../../../constant/types";
 import { apiBaseURL } from "../../../constant/api";
-import { setUserDetails } from "../redux/slices/userSlice";
-import { setUserPosts } from "../redux/slices/userPostSlice";
+import { setUserDetails, clearUserDetails } from "../redux/slices/userSlice";
+import { setUserPosts, clearUserPosts } from "../redux/slices/userPostSlice";
 import { fetchAllPosts } from "../redux/slices/postsSlice";
 import { fetchAllTags } from "../redux/slices/tagsSlice";
 import { RootState } from "../redux/store";
 import { fetchWithAuth } from "../../../utils";
+import { clearTokens } from "../redux/slices/authSlice"; 
 
 const fetchUserDetail = async (token: string) => {
   try {
@@ -18,9 +19,7 @@ const fetchUserDetail = async (token: string) => {
       method: "GET",
       headers: { Authorization: token ? `Bearer ${token}` : "" },
     });
-    if (!response.ok) {
-      throw new Error("Failed to get user details.");
-    }
+    if (!response.ok) throw new Error("Failed to get user details.");
     return await response.json();
   } catch (error) {
     console.error("Error fetching user details:", error);
@@ -34,9 +33,7 @@ const fetchUserPosts = async (token: string, userId: string) => {
       method: "GET",
       headers: { Authorization: token ? `Bearer ${token}` : "" },
     });
-    if (!response.ok) {
-      throw new Error("Failed to get user's articles.");
-    }
+    if (!response.ok) throw new Error("Failed to get user's articles.");
     return await response.json();
   } catch (error) {
     console.error("Error fetching user posts:", error);
@@ -44,14 +41,40 @@ const fetchUserPosts = async (token: string, userId: string) => {
   }
 };
 
+const verifyLogin = async (token: string) => {
+  try {
+    const response = await fetchWithAuth(`${apiBaseURL}/user/auth/verify/`, {
+      method: "GET",
+      headers: { Authorization: token ? `Bearer ${token}` : "" },
+    });
+    if (!response.ok) throw new Error("User session has expired or invalid.");
+    return await response.json();
+  } catch (error) {
+    console.error("User session has expired or invalid:", error);
+    return null;
+  }
+};
+
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const userId = useSelector((state: RootState) => state.user.id);
   const access = useSelector((state: RootState) => state.auth.accessToken);
 
   useEffect(() => {
     const fetchUserData = async () => {
-      if (!access) return;
+      if (!access) {
+        dispatch(clearUserDetails());
+        dispatch(clearUserPosts());
+        return;
+      }
+
+      const isTokenValid = await verifyLogin(access);
+      if (!isTokenValid) {
+        console.warn("Token invalid, clearing authentication...");
+        dispatch(clearTokens()); 
+        dispatch(clearUserDetails()); 
+        dispatch(clearUserPosts()); 
+        return;
+      }
 
       const userDetails = await fetchUserDetail(access);
       if (userDetails) {
@@ -64,8 +87,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         );
       }
 
-      if (userId) {
-        const userPosts = await fetchUserPosts(access, userId);
+      if (userDetails?.id) {
+        const userPosts = await fetchUserPosts(access, userDetails.id);
         if (userPosts) {
           dispatch(setUserPosts(userPosts));
         }
@@ -76,7 +99,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     };
 
     fetchUserData();
-  }, [dispatch, access, userId]);
+  }, [dispatch, access]);
 
   return (
     <div>

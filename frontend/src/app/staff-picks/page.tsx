@@ -1,8 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import PostCard from "../components/PostCard";
-import { formatDate, getRandomImage } from "../../../utils";
-import { dummyProfileImages, thumbnailImages } from "../../../constant/images.";
+import { formatDate } from "../../../utils";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 import { PostCardProps } from "../../../constant/types"; 
@@ -58,8 +57,8 @@ function RecommendedPostsPage() {
             likes: article.like_count,
             comments: 0,
             isBookmarked: false,
-            authorImage: getRandomImage(dummyProfileImages),
-            image: getRandomImage(thumbnailImages),
+            authorImage: '/dummy-profile.jpg',
+            image: '/thumbnail.jpg',
             seoSlug: article.seo_slug,
           })
         );

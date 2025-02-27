@@ -1,9 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AuthState } from '../../../../constant/types';
 
+// Helper function to safely access localStorage
+const getInitialToken = (key: string): string => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem(key) || "";
+  }
+  return "";
+};
+
 const initialState: AuthState = {
-  accessToken: typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null,
-  refreshToken: typeof window !== 'undefined' ? localStorage.getItem('refreshToken') : null,
+  accessToken: getInitialToken('accessToken'),
+  refreshToken: getInitialToken('refreshToken'),
 };
 
 export const authSlice = createSlice({
@@ -16,14 +24,16 @@ export const authSlice = createSlice({
     ) => {
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
+      
       if (typeof window !== 'undefined') {
         localStorage.setItem('accessToken', action.payload.accessToken);
         localStorage.setItem('refreshToken', action.payload.refreshToken);
       }
     },
     clearTokens: (state) => {
-      state.accessToken = null;
-      state.refreshToken = null;
+      state.accessToken = "";
+      state.refreshToken = "";
+      
       if (typeof window !== 'undefined') {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
@@ -33,5 +43,4 @@ export const authSlice = createSlice({
 });
 
 export const { setTokens, clearTokens } = authSlice.actions;
-
 export default authSlice.reducer;

@@ -1,29 +1,26 @@
-export const getRandomImage = (imageArray: string[]) => {
-    const randomIndex = Math.floor(Math.random() * imageArray.length);
-    return imageArray[randomIndex];
-  }
-  
+import { apiBaseURL } from "./constant/api";
+import { store } from "@/app/redux/store";
+import { clearTokens, setTokens } from "@/app/redux/slices/authSlice";
+
 export const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 };
-  
+
 export const capitalize = (str: string): string => {
   if (!str) {
     return "";
   }
-
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-import { apiBaseURL } from "./constant/api";
-import { store } from "@/app/redux/store";
-import { setAccessToken } from "@/app/redux/slices/authSlice"; // Redux action to update token
-
 export const refreshAccessToken = async (): Promise<string | null> => {
   try {
-    const refreshToken = store.getState().auth.refreshToken;
-    if (!refreshToken) return null;
+    const refreshToken = store.getState().auth.refreshToken || "";
+    if (!refreshToken) {
+      store.dispatch(clearTokens()); 
+      return null;
+    }
 
     const response = await fetch(`${apiBaseURL}/user/token/refresh/`, {
       method: "POST",
@@ -36,18 +33,19 @@ export const refreshAccessToken = async (): Promise<string | null> => {
     }
 
     const data = await response.json();
-    store.dispatch(setAccessToken(data.access)); // Update Redux state
+    store.dispatch(setTokens({ accessToken: data.access, refreshToken })); 
     return data.access;
   } catch (error) {
     console.error("Error refreshing access token:", error);
+    store.dispatch(clearTokens()); 
     return null;
   }
 };
 
-export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
-  let accessToken = store.getState().auth.accessToken;
+export const fetchWithAuth = async (url: string, options: RequestInit = {}): Promise<Response> => {
+  const accessToken = store.getState().auth.accessToken || ""; // Ensure it's a string
 
-  const response = await fetch(url, {
+  let response = await fetch(url, {
     ...options,
     headers: {
       ...options.headers,
@@ -56,10 +54,12 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
   });
 
   if (response.status === 401) {
-    // If unauthorized, attempt to refresh the token
     const newAccessToken = await refreshAccessToken();
+    
     if (newAccessToken) {
-      return fetch(url, {
+      store.dispatch(setTokens({ accessToken: newAccessToken, refreshToken: store.getState().auth.refreshToken || "" }));
+
+      response = await fetch(url, {
         ...options,
         headers: {
           ...options.headers,

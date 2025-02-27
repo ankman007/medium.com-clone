@@ -5,8 +5,7 @@ import PostCard from "./components/PostCard";
 import StaffPicksSection from "./components/StaffPicksSection";
 import RecommendedTopics from "./components/RecommendedTopics";
 import HomePage from "./components/HomePage";
-import { dummyProfileImages, thumbnailImages } from "../../constant/images.";
-import { getRandomImage, formatDate } from "../../utils";
+import { formatDate } from "../../utils";
 import { RootState } from "./redux/store";
 import PostPageSkeleton from "@/app/skeletons/PostPageSkeleton"
 
@@ -32,7 +31,7 @@ export default function Home() {
     articleId: post.id,
     authorId: post.author_id as unknown as number,
     authorName: post.author_name,
-    authorImage: getRandomImage(dummyProfileImages),
+    authorImage: '/dummy-profile.jpg',
     title: post.title,
     updatedAt: formatDate(post.updated_at),
     seoSlug: post.seo_slug,
@@ -54,8 +53,8 @@ export default function Home() {
                   updatedAt={formatDate(post.updated_at)}
                   title={post.title}
                   likes={post.like_count}
-                  authorImage={getRandomImage(dummyProfileImages)}
-                  thumbnailImage={getRandomImage(thumbnailImages)}
+                  authorImage='/dummy-profile.jpg'
+                  thumbnailImage='/thumbnail.jpg'
                   comments={1}
                   isBookmarked={false}
                 />

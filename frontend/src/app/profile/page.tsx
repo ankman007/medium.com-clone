@@ -4,8 +4,7 @@ import PostCard from "@/app/components/PostCard";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 import withAuth from "@/app/hoc/withAuth";
-import { formatDate, getRandomImage, capitalize } from "../../../utils";
-import { dummyProfileImages, thumbnailImages } from "../../../constant/images.";
+import { formatDate, capitalize } from "../../../utils";
 import { UserPostPropsArray, UserDetailsProps } from "../../../constant/types";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -42,7 +41,7 @@ function UserProfile() {
       <div className="container mx-auto px-4 lg:px-8 py-8">
         <div className="flex items-center gap-4 mb-8">
           <Image
-            src={getRandomImage(dummyProfileImages)}
+            src='/dummy-profile.jpg'
             alt="Profile"
             className="w-12 h-12 rounded-full"
             width={40}
@@ -69,10 +68,10 @@ function UserProfile() {
                   authorId={post.author_id}
                   articleId={post.id}
                   authorName={post.author_name}
-                  authorImage={getRandomImage(dummyProfileImages)}
+                  authorImage='/dummy-profile.jpg'
                   title={post.title}
                   description={post.seo_description}
-                  thumbnailImage={getRandomImage(thumbnailImages)}
+                  thumbnailImage='/thumbnail.jpg'
                   updatedAt={formatDate(post.updated_at)}
                   likes={0}
                   comments={0}

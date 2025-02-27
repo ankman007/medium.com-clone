@@ -1,8 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { dummyProfileImages, thumbnailImages } from "../../../../constant/images.";
-import { formatDate, getRandomImage, capitalize } from "../../../../utils";
+import { formatDate, capitalize } from "../../../../utils";
 import { PostCardProps } from "../../../../constant/types";
 import PostCard from "@/app/components/PostCard";
 import { useSelector } from "react-redux";
@@ -49,8 +48,8 @@ function UserPostPages() {
           likes: article.like_count,
           comments: 0,
           isBookmarked: false,
-          authorImage: getRandomImage(dummyProfileImages),
-          thumbnailImage: getRandomImage(thumbnailImages),
+          authorImage: '/dummy-profile.jpg',
+          thumbnailImage: '/thumbnail.jpg',
           seoSlug: article.seo_slug,
         }));
 

@@ -9,8 +9,6 @@ import { apiBaseURL } from '../../../constant/api';
 import { RootState } from '../redux/store';
 import { useSelector } from 'react-redux';
 import CommentSection from './CommentSection';
-import { getRandomImage } from '../../../utils';
-import { dummyProfileImages } from '../../../constant/images.';
 import { fetchWithAuth } from '../../../utils';
 
 library.add(faHeart, faCommentAlt, faBookmark);
@@ -195,7 +193,7 @@ const PostPage: React.FC<PostDetailProps> = ({
           {commentsList.map((comment) => (
             <CommentSection
               key={comment.id}
-              profilePicture={getRandomImage(dummyProfileImages)}
+              profilePicture='/dummy-profile.jpg'
               name={comment.username}
               date={new Date(comment.createdAt).toLocaleDateString()}
               content={comment.commentContent}

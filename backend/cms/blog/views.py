@@ -8,6 +8,50 @@ from loguru import logger
 from .serializers import ArticleSerializer, CommentSerializer, ImageSerializer, LikeSerializer, TagSerializer
 from .models import Article, Comment, Like, Tag
 from django.contrib.auth import get_user_model
+from rest_framework.parsers import MultiPartParser, FormParser
+
+class CreateArticleView(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)  
+
+    def post(self, request):
+        try:
+            request.data['author'] = request.user
+
+            serializer = ArticleSerializer(data=request.data)
+            
+            if serializer.is_valid(raise_exception=True):
+                article = serializer.save(author=request.user)  
+
+                tags_data = request.data.get('tags', [])
+                if tags_data:
+                    tags = Tag.objects.filter(id__in=tags_data)
+                    article.tags.set(tags)
+                    article.save()
+
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response({'error': serializer.errors, 'message': 'Error creating new article.'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.error(f"Error creating article: {e}")
+            return Response({"error": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class UpdateArticleView(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)  
+
+    def put(self, request, id):
+        try:
+            article = get_object_or_404(Article, id=id)
+            serializer = ArticleSerializer(instance=article, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": "Error updating article."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class ArticleListView(APIView):
     permission_classes = []  
@@ -39,33 +83,6 @@ class ArticleDetail(APIView):
             logger.error(f"Error fetching article details for id {id}: {e}")
             return Response({"error": "Error fetching article details"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class CreateArticleView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        try:
-            # request.data['author'] = request.user.id  
-            request.data['author'] = request.user  
-
-            serializer = ArticleSerializer(data=request.data)
-            
-            if serializer.is_valid(raise_exception=True):
-                article = serializer.save(author=request.user)  
-
-                tags_data = request.data.get('tags', [])
-                if tags_data:
-                    tags = Tag.objects.filter(id__in=tags_data)
-                    article.tags.set(tags)
-                    article.save()
-
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            else:
-                logger.warning(f"Validation error: {serializer.errors}")
-                return Response({'error': serializer.errors, 'message': 'Error creating new article.'}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            logger.error(f"Error creating article: {e}")
-            return Response({"error": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 class DeleteArticleView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -77,24 +94,7 @@ class DeleteArticleView(APIView):
         except Exception as e:
             logger.error(f"Error deleting article with ID {id}: {e}")
             return Response({"error": "Error deleting article."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-class UpdateArticleView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def put(self, request, id):
-        try:
-            article = get_object_or_404(Article, id=id)
-            serializer = ArticleSerializer(instance=article, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            else:
-                logger.warning(f"Validation error on update: {serializer.errors}")
-                return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            logger.error(f"Error updating article with ID {id}: {e}")
-            return Response({"error": "Error updating article."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+        
 class ToggleLikeView(APIView):
     permission_classes = [IsAuthenticated]
     
@@ -144,7 +144,7 @@ class ArticleCommentsView(APIView):
     def get(self, request, article_id):
         try:
             article = get_object_or_404(Article, id=article_id)
-
+ 
             comments = Comment.objects.filter(article=article)
 
             serializer = CommentSerializer(comments, many=True)

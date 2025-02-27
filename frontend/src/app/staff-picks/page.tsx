@@ -46,6 +46,8 @@ function RecommendedPostsPage() {
             updated_at: string;
             like_count: number;
             seo_slug: string;
+            author_avatar: string;
+            thumbnail: string;
           }) => ({
             articleId: article.id,
             authorId: Number(article.author_id),
@@ -57,8 +59,8 @@ function RecommendedPostsPage() {
             likes: article.like_count,
             comments: 0,
             isBookmarked: false,
-            authorImage: '/dummy-profile.jpg',
-            image: '/thumbnail.jpg',
+            authorImage: article.author_avatar || '/dummy-profile.jpg',
+            image: article.thumbnail || '/thumbnail.jpg',
             seoSlug: article.seo_slug,
           })
         );

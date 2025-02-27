@@ -11,6 +11,7 @@ const Signup = () => {
     password2: "",
     tc: true,
   });
+  const [avatar, setAvatar] = useState<File | null>(null); // State for avatar
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,6 +36,12 @@ const Signup = () => {
     setFormData({ ...formData, [event.target.id]: event.target.value });
   };
 
+  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setAvatar(event.target.files[0]);
+    }
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
@@ -57,13 +64,25 @@ const Signup = () => {
       return;
     }
 
+    if (!avatar) {
+      setError("Profile avatar is required.");
+      return;
+    }
+
     setLoading(true);
 
     try {
+      const formDataToSend = new FormData();
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("email", formData.email);
+      formDataToSend.append("password", formData.password);
+      formDataToSend.append("password2", formData.password2);
+      formDataToSend.append("tc", formData.tc.toString());
+      formDataToSend.append("avatar", avatar); // Add the avatar to the form data
+
       const response = await fetchWithAuth("http://localhost:8000/user/register/", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: formDataToSend, // Send form data
       });
 
       const data = await response.json();
@@ -74,7 +93,6 @@ const Signup = () => {
 
       localStorage.setItem("accessToken", data.token.access);
       localStorage.setItem("refreshToken", data.token.refresh);
-      
 
       setSuccess("Signup successful! Redirecting...");
       setTimeout(() => (window.location.href = "/login"), 2000);
@@ -156,13 +174,27 @@ const Signup = () => {
             />
           </div>
 
+          <div>
+            <label htmlFor="avatar" className="block text-sm font-medium text-gray-700">
+              Profile Avatar
+            </label>
+            <input
+              onChange={handleAvatarChange}
+              type="file"
+              id="avatar"
+              accept="image/*"
+              className="mt-2 w-full p-3 border border-gray-300 rounded-lg"
+              required
+            />
+          </div>
+
           <div className="mt-4">
             <input type="checkbox" id="terms" className="mr-2" required />
             <label htmlFor="terms" className="text-sm text-gray-700">
               I accept the{" "}
               <Link
                 href="/terms"
-                className="text-black text-inherit no-underline flex items-center gap-2 hover:text-white focus:text-white hover:no-underline focus:no-underline space-x-2" >
+                className="text-black text-inherit no-underline flex items-center gap-2 hover:text-white focus:text-white hover:no-underline focus:no-underline space-x-2">
                 Terms and Conditions
               </Link>
             </label>
@@ -181,7 +213,7 @@ const Signup = () => {
           <p>
             <Link
               href="/login"
-              className="text-black font-bold text-inherit no-underline flex items-center gap-2 hover:text-white focus:text-white hover:no-underline focus:no-underline space-x-2" >
+              className="text-black font-bold text-inherit no-underline flex items-center gap-2 hover:text-white focus:text-white hover:no-underline focus:no-underline space-x-2">
               Already have an account? Login
             </Link>
           </p>

@@ -26,26 +26,40 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return data
     
     def create(self, validated_data):
-        validated_data.pop('password2')        
+        validated_data.pop('password2')
+        avatar = validated_data.pop('avatar', None)  
         user = User.objects.create_user(**validated_data)
+        
+        if avatar:  
+            user.avatar = avatar
+            user.save()
+        
         return user
+
 
 class UserLoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=255)
     class Meta:
         model = User
         fields = ['email', 'password']
-
+    
 class UserProfileSerializer(serializers.ModelSerializer):
-    class Meta: 
+    avatar = serializers.SerializerMethodField()
+
+    class Meta:
         model = User
-        fields = ['id', 'email', 'name', 'avatar']  
+        fields = ['id', 'name', 'email', 'avatar']
+
+    def get_avatar(self, obj):
+        request = self.context.get('request')
+        if obj.avatar and request is not None:
+            return request.build_absolute_uri(obj.avatar.url)
+        return None
+
 
 class UserChangePasswordSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=255, style={'input_type': 'password'}, write_only=True)
     password2 = serializers.CharField(max_length=255, style={'input_type': 'password'}, write_only=True)
-    # class Meta:
-    #     fields = ['password', 'password2']
         
     def validate(self, data):
         password = data.get('password')
@@ -75,7 +89,6 @@ class SendPasswordResetEmailSerializer(serializers.Serializer):
             link = 'http://localhost:3000/api/user/reset-password/'+uid+'/'+token
             print('Password Reset Link', link)
             
-            # Send email
             body = 'Click Following Link To Reset Your Password '+link
             data = {
                 'subject': 'Reset Your Password',

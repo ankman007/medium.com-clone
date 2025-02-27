@@ -13,28 +13,36 @@ from rest_framework.parsers import MultiPartParser, FormParser
 class CreateArticleView(APIView):
     permission_classes = [IsAuthenticated]
     parser_classes = (MultiPartParser, FormParser)  
-
     def post(self, request):
         try:
-            request.data['author'] = request.user
+            data = request.data.copy()
+            data['author'] = request.user
+            logger.info(f"Request data: {request.data}")  
+            logger.info(f"Uploaded file: {request.FILES.get('thumbnail')}")  
 
             serializer = ArticleSerializer(data=request.data)
-            
             if serializer.is_valid(raise_exception=True):
-                article = serializer.save(author=request.user)  
-
-                tags_data = request.data.get('tags', [])
-                if tags_data:
+                article = serializer.save(author=request.user) 
+                logger.info(f"Article created: {article.title}")
+                
+                tags_data = request.data.get('tags', None)
+                if tags_data is not None:  
                     tags = Tag.objects.filter(id__in=tags_data)
                     article.tags.set(tags)
                     article.save()
-
+                
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
+                logger.error(f"Serializer errors: {serializer.errors}")
                 return Response({'error': serializer.errors, 'message': 'Error creating new article.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        except KeyError as key_error:
+            logger.error(f"Missing expected key in the request: {key_error}")
+            return Response({"error": f"Missing key: {key_error}"}, status=status.HTTP_400_BAD_REQUEST)
+
         except Exception as e:
-            logger.error(f"Error creating article: {e}")
-            return Response({"error": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            logger.error(f"Unexpected error creating article: {e}", exc_info=True)
+            return Response({"error": "Internal Server Error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class UpdateArticleView(APIView):

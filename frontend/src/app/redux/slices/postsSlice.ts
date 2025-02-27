@@ -14,6 +14,8 @@ interface Post {
   seo_slug: string;
   tags: number[];
   like_count: number;
+  thumbnail: string;
+  author_avatar: string;
 }
 
 interface PostsState {
@@ -22,14 +24,12 @@ interface PostsState {
   error: string | null;
 }
 
-// Initial state
 const initialState: PostsState = {
   posts: [],
   loading: false,
   error: null,
 };
 
-// Async thunk to fetch posts
 export const fetchAllPosts = createAsyncThunk<Post[], string>(
   "posts/fetchAllPosts",
   async (token, { rejectWithValue }) => {

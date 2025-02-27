@@ -6,6 +6,8 @@ class ArticleSerializer(serializers.ModelSerializer):
     author_name = serializers.CharField(source='author.name', read_only=True)
     author_id = serializers.CharField(source='author.id', read_only=True)
     author_email = serializers.EmailField(source='author.email', read_only=True)  
+    author_avatar = serializers.ImageField(source='author.avatar', read_only=True)
+    
     seo_slug = serializers.ReadOnlyField()
     tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
     like_count = serializers.SerializerMethodField() 
@@ -13,7 +15,7 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Article
-        fields = ['id', 'author_name', 'author_id', 'author_email', 'title', 'content', 'seo_description', 'created_at', 'updated_at', 'seo_slug', 'tags', 'like_count', 'thumbnail']
+        fields = ['id', 'author_name', 'author_id', 'author_email', 'title', 'content', 'seo_description', 'created_at', 'updated_at', 'seo_slug', 'tags', 'like_count', 'thumbnail', 'author_avatar']
         read_only_fields = ['created_at', 'updated_at']
         unique_together = ['author', 'seo_slug']
 

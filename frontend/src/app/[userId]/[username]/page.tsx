@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 import { fetchWithAuth } from "../../../../utils";
 import withAuth from "@/app/hoc/withAuth";
-import PageListSkeleton from "@/app/skeletons/PostListSkeleton"
+import PageListSkeleton from "@/app/skeletons/PostListSkeleton";
 
 function UserPostPages() {
   const [posts, setPosts] = useState<PostCardProps[]>([]);
@@ -16,7 +16,6 @@ function UserPostPages() {
   const [error, setError] = useState<string | null>(null);
   const { userId, username } = useParams();
   const token = useSelector((state: RootState) => state.auth.accessToken);
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,21 +36,35 @@ function UserPostPages() {
         }
 
         const articlesData = await articlesResponse.json();
-        const formattedArticles = (articlesData || []).map((article: { id: number, author_id: number; author_name: string; author_email: string; title: string; seo_description: string; updated_at: string; like_count: number; seo_slug: string; }) => ({
-          authorId: article.author_id,
-          articleId: article.id,
-          authorName: article.author_name,
-          authorEmail: article.author_email,
-          title: article.title,
-          description: article.seo_description,
-          updatedAt: formatDate(article.updated_at),
-          likes: article.like_count,
-          comments: 0,
-          isBookmarked: false,
-          authorImage: '/dummy-profile.jpg',
-          thumbnailImage: '/thumbnail.jpg',
-          seoSlug: article.seo_slug,
-        }));
+        const formattedArticles = (articlesData || []).map(
+          (article: {
+            id: number;
+            author_id: number;
+            author_name: string;
+            author_email: string;
+            title: string;
+            seo_description: string;
+            updated_at: string;
+            like_count: number;
+            seo_slug: string;
+            author_avatar: string;
+            thumbnail: string;
+          }) => ({
+            authorId: article.author_id,
+            articleId: article.id,
+            authorName: article.author_name,
+            authorEmail: article.author_email,
+            title: article.title,
+            description: article.seo_description,
+            updatedAt: formatDate(article.updated_at),
+            likes: article.like_count,
+            comments: 0,
+            isBookmarked: false,
+            authorImage: article.author_avatar || "/dummy-profile.jpg",
+            thumbnailImage: article.thumbnail || "/thumbnail.jpg",
+            seoSlug: article.seo_slug,
+          })
+        );
 
         setPosts(formattedArticles);
       } catch (error) {
@@ -66,7 +79,7 @@ function UserPostPages() {
   }, [username, userId, token]);
 
   if (loading) {
-    return <PageListSkeleton/>;
+    return <PageListSkeleton />;
   }
 
   if (error) {
@@ -77,29 +90,20 @@ function UserPostPages() {
     <div className="bg-white text-black min-h-screen">
       <div className="container mx-auto px-4 lg:px-8 py-8">
         <h1 className="text-3xl font-bold mb-8">
-          {username && typeof username === 'string' ? capitalize(username) : ''} 
+          {username && typeof username === "string" ? capitalize(username) : ""}
           <span className="block text-lg font-normal text-gray-500 mt-2">
-            All posts from {username && typeof username === 'string' ? capitalize(username) : ''}.
+            All posts from{" "}
+            {username && typeof username === "string"
+              ? capitalize(username)
+              : ""}
+            .
           </span>
         </h1>
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="flex-grow space-y-6">
-            {posts.map((post, index) => (
-              <div key={post.title + index}>
-                <PostCard
-                  authorId={post.authorId}
-                  articleId={post.articleId}
-                  authorName={post.authorName}
-                  authorImage={post.authorImage}
-                  title={post.title}
-                  description={post.description}
-                  thumbnailImage={post.thumbnailImage}
-                  updatedAt={post.updatedAt}
-                  likes={post.likes}
-                  comments={post.comments}
-                  isBookmarked={post.isBookmarked}
-                  seoSlug={post.seoSlug}
-                />
+            {posts.map((post) => (
+              <div key={post.articleId}>
+                <PostCard {...posts} />
                 <hr />
               </div>
             ))}

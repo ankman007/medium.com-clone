@@ -8,10 +8,10 @@ class Article(models.Model):
     content = models.TextField() 
     seo_description = models.CharField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True) 
     seo_slug = models.CharField(max_length=255)
     tags = models.ManyToManyField('Tag', related_name='articles')
-    thumbnail = models.ImageField(upload_to='article_thumbnails/', blank=True, null=True)  # Added thumbnail field
+    thumbnail = models.ImageField(upload_to='article_thumbnails/', blank=True, null=True) 
 
 
     author_name = models.CharField(max_length=255, blank=True, null=True)

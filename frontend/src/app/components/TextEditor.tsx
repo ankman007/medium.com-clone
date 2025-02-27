@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -45,7 +43,8 @@ export default function BlogEditor() {
   const token = useSelector((state: RootState) => state.auth.accessToken);
   const [title, setTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
-  
+  const [thumbnail, setThumbnail] = useState<File | null>(null); 
+  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null); 
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -63,52 +62,70 @@ export default function BlogEditor() {
       Image.configure({ allowBase64: true }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
     ],
-    // content: "<p>Write your blog here...</p>",
   });
 
-  const handleSubmit = async () => {
-    if (!editor) return;
-    const tags = [1, 3, 6, 8];
-    const blogData = {
-      title,
-      seo_description: seoDescription,
-      content: editor.getHTML(),
-      tags: tags,
-    };
-    try {
-      const response = await fetchWithAuth(`${apiBaseURL}articles/create/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(blogData),
-      });
-      if (response.ok) {
-        const data = await response.json();
-        const { id, seo_slug } = data;
-        const newPath = `/post/${id}/${seo_slug}/`;
-
-        window.location.href = newPath
-
-        // router.push(`/post/${id}/${seo_slug}/`);
-      } else {
-        alert("Failed to publish blog.");
-      }
-    } catch (error) {
-      console.error("Error publishing blog:", error);
-      alert("An error occurred.");
+  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    if (file) {
+      console.log("Selected file:", file); // Debugging log
+      console.log("File type:", file.type); // Check MIME type
+  
+      setThumbnail(file);
+  
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setThumbnailPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-  if (!editor) return <BlogPublishSkeleton/>;
+  const handleSubmit = async () => {
+    if (!editor) return;
+    const tags = 1;
+  
+    try {
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("seo_description", seoDescription);
+      formData.append("content", editor.getHTML());
+      formData.append("tags", JSON.stringify(tags));
+  
+      if (thumbnail) {
+        console.log("Appending file to FormData:", thumbnail);
+        formData.append("thumbnail", thumbnail);
+      }
+  
+      const response = await fetchWithAuth(`${apiBaseURL}articles/create/`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        const errorText = await response.text(); // Read response as text for debugging
+        console.error("Error:", errorText);
+        return;
+      }
+  
+      const data = await response.json(); // Read JSON only once
+      console.log("Server Response:", data);
+      
+      const { id, seo_slug } = data;
+      const newPath = `/post/${id}/${seo_slug}/`;
+      window.location.href = newPath;
+  
+    } catch (error) {
+      console.error("Error publishing blog:", error);
+    }
+  };
+  
+
+  if (!editor) return <BlogPublishSkeleton />;
 
   return (
-    <div className="max-w-5xl mx-auto p-6 bg-white text-black rounded-lg ">
-      {" "}
-      <h2 className="text-2xl font-bold mb-4 text-center">
-        Create a New Blog Post
-      </h2>
+    <div className="max-w-5xl mx-auto p-6 bg-white text-black rounded-lg">
+      <h2 className="text-2xl font-bold mb-4 text-center">Create a New Blog Post</h2>
       <input
         type="text"
         placeholder="Enter blog title"
@@ -123,25 +140,20 @@ export default function BlogEditor() {
         value={seoDescription}
         onChange={(e) => setSeoDescription(e.target.value)}
       />
+      {/* Thumbnail upload section */}
+      <div className="mb-4">
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleThumbnailChange}
+          className="mb-2"
+        />
+        {thumbnailPreview && (
+          <img src={thumbnailPreview} alt="Thumbnail Preview" className="w-32 h-32 object-cover" />
+        )}
+      </div>
       <div className="mb-2 flex flex-wrap gap-2 bg-gray-300 p-2 rounded">
-        {[
-          faBold,
-          faItalic,
-          faUnderline,
-          faStrikethrough,
-          faHeading,
-          faQuoteLeft,
-          faListUl,
-          faListOl,
-          faCode,
-          faImage,
-          faLink,
-          faAlignLeft,
-          faAlignCenter,
-          faAlignRight,
-          faUndo,
-          faRedo,
-        ].map((icon, index) => (
+        {[faBold, faItalic, faUnderline, faStrikethrough, faHeading, faQuoteLeft, faListUl, faListOl, faCode, faImage, faLink, faAlignLeft, faAlignCenter, faAlignRight, faUndo, faRedo].map((icon, index) => (
           <button
             key={index}
             onClick={() => {
@@ -159,14 +171,8 @@ export default function BlogEditor() {
                   editor.chain().focus().toggleStrike().run();
                   break;
                 case faHeading:
-                  editor
-                    .chain()
-                    .focus()
-                    .toggleHeading({
-                      level: index < 5 ? (index === 4 ? 1 : 2) : 1,
-                    })
-                    .run();
-                  break; 
+                  editor.chain().focus().toggleHeading({ level: index < 5 ? (index === 4 ? 1 : 2) : 1 }).run();
+                  break;
                 case faQuoteLeft:
                   editor.chain().focus().toggleBlockquote().run();
                   break;
@@ -185,8 +191,7 @@ export default function BlogEditor() {
                   break;
                 case faLink:
                   const linkUrl = prompt("Enter link URL:");
-                  if (linkUrl)
-                    editor.chain().focus().setLink({ href: linkUrl }).run();
+                  if (linkUrl) editor.chain().focus().setLink({ href: linkUrl }).run();
                   break;
                 case faAlignLeft:
                   editor.chain().focus().setTextAlign("left").run();
@@ -205,23 +210,19 @@ export default function BlogEditor() {
                   break;
               }
             }}
-            className="editor-btn bg-gray-700 hover:bg-gray-600 text-white rounded p-2" // Button styling
+            className="editor-btn bg-gray-700 hover:bg-gray-600 text-white rounded p-2"
           >
-            <FontAwesomeIcon icon={icon} />{" "}
-            {icon === faHeading && index < 2 ? index + 1 : ""}{" "}
+            <FontAwesomeIcon icon={icon} />
+            {icon === faHeading && index < 2 ? index + 1 : ""}
           </button>
         ))}
       </div>
       <div className="border border-gray-700 rounded p-2 bg-white text-black min-h-[200px] focus:outline-none">
-        {" "}
         <EditorContent editor={editor} />
       </div>
-      {/* Submit Button */}
       <button
         onClick={handleSubmit}
-        // className="w-full mt-4 bg-white text-black py-2 rounded hover:bg-gray-300"
-        className="w-full mt-4 marker:flex items-center space-x-2 bg-black text-white rounded-full py-2 px-4 no-underline hover:text-white hover:bg-gray-800 focus:text-white hover:no-underline focus:no-underline"
-
+        className="w-full mt-4 bg-black text-white rounded-full py-2 px-4 hover:bg-gray-800"
       >
         Publish Blog
       </button>

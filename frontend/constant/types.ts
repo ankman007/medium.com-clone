@@ -48,6 +48,7 @@ export type UserDetailsProps = {
   id: number;
   email: string;
   name: string;
+  avatar: string;
 };
 
 export type UserPostProps = {
@@ -60,6 +61,8 @@ export type UserPostProps = {
   seo_description: string;
   updated_at: string;
   seo_slug: string;
+  author_avatar: string
+  thumbnail: string
 };
 
 export type UserPostPropsArray = UserPostProps[];

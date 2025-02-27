@@ -68,10 +68,10 @@ function UserProfile() {
                   authorId={post.author_id}
                   articleId={post.id}
                   authorName={post.author_name}
-                  authorImage='/dummy-profile.jpg'
+                  authorImage={post.author_avatar || '/dummy-profile.jpg'}
+                  thumbnailImage={post.thumbnail || '/thumbnail.jpg'}
                   title={post.title}
                   description={post.seo_description}
-                  thumbnailImage='/thumbnail.jpg'
                   updatedAt={formatDate(post.updated_at)}
                   likes={0}
                   comments={0}

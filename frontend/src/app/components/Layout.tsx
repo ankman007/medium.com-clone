@@ -84,6 +84,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             id: userDetails.id,
             email: userDetails.email,
             name: userDetails.name,
+            avatar: userDetails.avatar
           })
         );
       }

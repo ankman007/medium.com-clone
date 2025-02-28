@@ -18,7 +18,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             'avatar': {'required': False}  
         }
         
-    def validate(self, data):
+    def validate(self, data): 
         password = data.get('password')
         password2 = data.get('password2')
         if password != password2:
@@ -55,7 +55,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
         if obj.avatar and request is not None:
             return request.build_absolute_uri(obj.avatar.url)
         return None
-
 
 class UserChangePasswordSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=255, style={'input_type': 'password'}, write_only=True)

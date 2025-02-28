@@ -17,7 +17,7 @@ DEBUG = getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = getenv(
     'DJANGO_ALLOWED_HOSTS',
-    '127.0.0.1,localhost'
+    '127.0.0.1,localhost',
 ).split(',')
 
 DB_NAME = getenv('DB_NAME')

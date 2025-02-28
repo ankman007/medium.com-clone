@@ -28,6 +28,7 @@ const CommentSection: React.FC<CommentProps> = ({ profilePicture, name, date, co
               layout="fill"
               objectFit="cover"
               className="rounded-full"
+              unoptimized
             />
           </div>
           <div>

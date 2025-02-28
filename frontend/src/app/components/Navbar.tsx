@@ -116,6 +116,7 @@ const Navbar = () => {
                 height={40}
                 className="rounded-full object-cover cursor-pointer"
                 onClick={toggleDropdown}
+                unoptimized
               />
 
               {isDropdownOpen && (

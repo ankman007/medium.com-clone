@@ -21,7 +21,9 @@ const StaffPicksSection: React.FC<StaffPicksSectionProps> = ({ articles }) => {
                   alt="Description of the image"
                   width={32}
                   height={32}
-                  className="rounded-full object-cover"
+                    className="rounded-full object-cover"
+                    unoptimized
+
                 />
               </div>
               <span className="text-sm text-gray-700">{article.authorName}</span>

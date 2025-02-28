@@ -12,7 +12,8 @@ from rest_framework.parsers import MultiPartParser, FormParser
 
 class CreateArticleView(APIView):
     permission_classes = [IsAuthenticated]
-    parser_classes = (MultiPartParser, FormParser)  
+    parser_classes = (MultiPartParser, FormParser)
+
     def post(self, request):
         try:
             data = request.data.copy()
@@ -20,7 +21,9 @@ class CreateArticleView(APIView):
             logger.info(f"Request data: {request.data}")  
             logger.info(f"Uploaded file: {request.FILES.get('thumbnail')}")  
 
-            serializer = ArticleSerializer(data=request.data)
+            # Use request.FILES explicitly when handling file uploads
+            serializer = ArticleSerializer(data=data, context={'request': request})
+
             if serializer.is_valid(raise_exception=True):
                 article = serializer.save(author=request.user) 
                 logger.info(f"Article created: {article.title}")
@@ -30,7 +33,7 @@ class CreateArticleView(APIView):
                     tags = Tag.objects.filter(id__in=tags_data)
                     article.tags.set(tags)
                     article.save()
-                
+
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 logger.error(f"Serializer errors: {serializer.errors}")
@@ -43,7 +46,6 @@ class CreateArticleView(APIView):
         except Exception as e:
             logger.error(f"Unexpected error creating article: {e}", exc_info=True)
             return Response({"error": "Internal Server Error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class UpdateArticleView(APIView):
     permission_classes = [IsAuthenticated]

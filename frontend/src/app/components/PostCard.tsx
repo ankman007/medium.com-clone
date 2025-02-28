@@ -36,7 +36,9 @@ const PostCard: React.FC<PostCardProps> = ({
               alt="Description of the image"
               width={32}
               height={32}
-              className="rounded-full object-cover"
+                className="rounded-full object-cover"
+                unoptimized
+
             />
             <span className="text-gray-600 text-sm font-medium">{authorName}</span>
             </Link>

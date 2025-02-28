@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["via.placeholder.com"],
+    domains: ["127.0.0.1"], // Allow images from Django backend
   },
   reactStrictMode: false,
   experimental: {

@@ -46,6 +46,8 @@ function UserProfile() {
             className="w-12 h-12 rounded-full"
             width={40}
             height={40}
+            unoptimized
+
           />
 
           <h1 className="text-3xl font-bold">

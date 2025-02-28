@@ -159,6 +159,8 @@ const PostPage: React.FC<PostDetailProps> = ({
             width={48}
             height={48}
             className="rounded-full object-cover"
+            unoptimized
+
           />
         </div>
         <div>

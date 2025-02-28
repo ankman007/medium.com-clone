@@ -3,7 +3,6 @@ import { Skeleton, Box, Avatar, Card, CardContent, CardMedia } from "@mui/materi
 const PostListSkeleton = () => {
   return (
     <Box sx={{ width: "100%", maxWidth: 800, margin: "auto", padding: 2 }}>
-      {/* User Info Skeleton */}
       <Box sx={{ display: "flex", alignItems: "center", gap: 2, marginBottom: 3 }}>
         <Skeleton variant="circular">
           <Avatar />
@@ -14,7 +13,6 @@ const PostListSkeleton = () => {
         </Box>
       </Box>
 
-      {/* Post List Skeleton */}
       {[1, 2, 3, 4].map((_, index) => (
         <Card key={index} sx={{ display: "flex", alignItems: "center", mb: 2, padding: 1 }}>
           <CardContent sx={{ flex: 1 }}>

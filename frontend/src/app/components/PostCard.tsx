@@ -30,17 +30,25 @@ const PostCard: React.FC<PostCardProps> = ({
       <div className="flex flex-col md:flex-row">
         <div className="flex flex-col justify-between flex-1">
           <div className="flex items-center space-x-3">
-            <Link href={`/${authorId}/${authorName}`} className="flex items-center space-x-2">
-            <Image
-              src={authorImage}
-              alt="Description of the image"
-              width={32}
-              height={32}
-                className="rounded-full object-cover"
-                unoptimized
-
-            />
-            <span className="text-gray-600 text-sm font-medium">{authorName}</span>
+            <Link
+              href={`/${authorId}/${authorName}`}
+              className="flex items-center space-x-2"
+            >
+              <div
+                style={{ position: "relative", width: "40px", height: "40px" }}
+              >
+                <Image
+                  src={authorImage}
+                  alt="3"
+                  style={{ objectFit: "cover" }}
+                  className="rounded-full object-cover"
+                  unoptimized
+                  fill
+                />
+              </div>
+              <span className="text-gray-600 text-sm font-medium">
+                {authorName}
+              </span>
             </Link>
           </div>
           <Link href={`/post/${articleId}/${seoSlug}`}>
@@ -86,10 +94,11 @@ const PostCard: React.FC<PostCardProps> = ({
           <div className="w-full md:w-48 h-48 ml-0 md:ml-6 mt-4 md:mt-0 flex-shrink-0 relative">
             <Image
               src={thumbnailImage}
-              alt="Description of the image"
+              alt="4"
               layout="fill"
               objectFit="cover"
               className="rounded-lg"
+              fill
             />
           </div>
         )}

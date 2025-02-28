@@ -18,9 +18,6 @@ class CreateArticleView(APIView):
         try:
             data = request.data.copy()
             data['author'] = request.user
-            logger.info(f"Request data: {request.data}")  
-            logger.info(f"Uploaded file: {request.FILES.get('thumbnail')}")  
-
             serializer = ArticleSerializer(data=data, context={'request': request})
 
             if serializer.is_valid(raise_exception=True):
@@ -53,7 +50,7 @@ class UpdateArticleView(APIView):
     def put(self, request, id):
         try:
             article = get_object_or_404(Article, id=id)
-            serializer = ArticleSerializer(instance=article, data=request.data, partial=True)
+            serializer = ArticleSerializer(instance=article, data=request.data, partial=True, context={'request': request})
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
@@ -68,13 +65,12 @@ class ArticleListView(APIView):
     def get(self, request):
         try:
             articles = Article.objects.all()
-            serialized_articles = []
+            serialized_articles = ArticleSerializer(articles, many=True, context={'request': request}).data
 
-            for article in articles:
-                serialized_article = ArticleSerializer(article).data
-                serialized_article['like_count'] = Like.objects.filter(article=article).count()
-                serialized_article['comments_count'] = Comment.objects.filter(article=article).count()
-                serialized_articles.append(serialized_article)
+            for article_data in serialized_articles:
+                article = Article.objects.get(id=article_data['id'])
+                article_data['like_count'] = Like.objects.filter(article=article).count()
+                article_data['comments_count'] = Comment.objects.filter(article=article).count()
 
             return Response(serialized_articles, status=status.HTTP_200_OK)
         except Exception as e:
@@ -88,7 +84,7 @@ class ArticleDetail(APIView):
             if not article:
                 return Response({"error": "Article not found"}, status=status.HTTP_404_NOT_FOUND)
 
-            serializer = ArticleSerializer(article)
+            serializer = ArticleSerializer(article, context={'request': request})
             response_data = serializer.data
             
             response_data['like_count'] = Like.objects.filter(article=article).count()
@@ -191,7 +187,7 @@ class AddTagsToArticleView(APIView):
             article.tags.set(tags)
             article.save()
             
-            serializer = ArticleSerializer(article)
+            serializer = ArticleSerializer(article, context={'request': request})
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             logger.error(f"Error adding tags to article ID {article_id}: {e}")
@@ -220,7 +216,7 @@ class GetPostsByUserView(APIView):
             user = get_user_model()
             user = get_object_or_404(user, id=id)
             articles = Article.objects.filter(author=user)
-            serializer = ArticleSerializer(articles, many=True)
+            serializer = ArticleSerializer(articles, many=True, context={'request': request})
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             logger.error(f"Error fetching articles by user {id}: {e}")
@@ -231,7 +227,7 @@ class GetPostsByTagView(APIView):
         try:
             tag = get_object_or_404(Tag, name=id)
             articles = Article.objects.filter(tags=tag)
-            serializer = ArticleSerializer(articles, many=True)
+            serializer = ArticleSerializer(articles, many=True, context={'request': request})
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             logger.error(f"Error fetching articles for tag {id}: {e}")

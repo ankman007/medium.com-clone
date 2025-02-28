@@ -18,11 +18,12 @@ const StaffPicksSection: React.FC<StaffPicksSectionProps> = ({ articles }) => {
               <div className="relative w-8 h-8">
                 <Image
                   src={article.authorImage}
-                  alt="Description of the image"
-                  width={32}
-                  height={32}
+                  alt="9"
+                  style={{ objectFit: 'cover' }} // Optional: to make sure the image covers the area
+
                     className="rounded-full object-cover"
                     unoptimized
+                    fill
 
                 />
               </div>

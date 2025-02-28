@@ -26,6 +26,8 @@ const Navbar = () => {
   const dispatch = useDispatch();
 
   const accessToken = useSelector((state: RootState) => state.auth.accessToken);
+  const userAvatar = useSelector((state: RootState) => state.user.avatar);
+
   const isLoggedIn = !!accessToken;
 
   useEffect(() => {
@@ -47,7 +49,6 @@ const Navbar = () => {
     setIsDropdownOpen(false);
   };
 
-  // Handle clicks outside the dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -109,23 +110,25 @@ const Navbar = () => {
             </div>
 
             <div className="relative" ref={dropdownRef}>
-              <Image
-                src="/dummy-profile-1.jpg"
-                alt="Profile Picture"
-                width={40}
-                height={40}
-                className="rounded-full object-cover cursor-pointer"
-                onClick={toggleDropdown}
-                unoptimized
-              />
+              <div
+                style={{ position: "relative", width: "40px", height: "40px" }}
+              >
+                <Image
+                  src={userAvatar ||"/dummy-profile-1.jpg"}
+                  alt="2"
+                  // style={{ objectFit: "cover" }} // Ensure the image covers the container
+                  className="rounded-full object-cover cursor-pointer"
+                  onClick={toggleDropdown}
+                  unoptimized
+                  fill
+                />
+              </div>
 
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg py-2">
-                  <button
-                    className="w-full flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
-                  >
+                  <button className="w-full flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
                     <Link href={"/profile"}>
-                    <FontAwesomeIcon icon={faUser} className="mr-2" /> Profile
+                      <FontAwesomeIcon icon={faUser} className="mr-2" /> Profile
                     </Link>
                   </button>
                   <a

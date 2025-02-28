@@ -14,6 +14,7 @@ interface Post {
   seo_slug: string;
   tags: number[];
   like_count: number;
+  comment_count: number;
   thumbnail: string;
   author_avatar: string;
 }

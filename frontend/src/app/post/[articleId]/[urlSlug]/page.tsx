@@ -45,7 +45,7 @@ const PostDetailPage = () => {
             const formattedArticle = {
               articleId: articlesData.id,
               authorId: articlesData.author_id,
-              authorName: articlesData.author,
+              authorName: articlesData.author_name,
               title: articlesData.title,
               updatedAt: formatDate(articlesData.updated_at),
               description: articlesData.seo_description,
@@ -55,8 +55,8 @@ const PostDetailPage = () => {
               content: articlesData.content,
               seoSlug: articlesData.slug,
               readTime: "3 min", 
-              thumbnailImage: "/thumbnail-1.jpg",
-              authorImage: "/dummy-profile-1.jpg",
+              thumbnailImage: articlesData.thumbnail || "/thumbnail.jpg",
+              authorImage: articlesData.author_avatar || "/dummy-profile.jpg",
             };
 
             setArticleData(formattedArticle);

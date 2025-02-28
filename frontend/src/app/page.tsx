@@ -55,7 +55,7 @@ export default function Home() {
                   likes={post.like_count}
                   authorImage={post.author_avatar || '/dummy-profile.jpg'}
                   thumbnailImage={post.thumbnail || '/thumbnail.jpg'}
-                  comments={1}
+                  comments={post.comment_count}
                   isBookmarked={false}
                 />
                 <hr />

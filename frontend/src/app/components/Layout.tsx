@@ -48,7 +48,7 @@ const verifyLogin = async (token: string) => {
       method: "GET",
       headers: { Authorization: token ? `Bearer ${token}` : "" },
     });
-    if (!response.ok) throw new Error("User session has expired or invalid.");
+    if (!response.ok) console.log("User session has expired or invalid.");
     return await response.json();
   } catch (error) {
     console.error("User session has expired or invalid:", error);

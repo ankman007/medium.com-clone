@@ -10,6 +10,8 @@ import { fetchWithAuth } from "../../../../utils";
 import withAuth from "@/app/hoc/withAuth";
 import PageListSkeleton from "@/app/skeletons/PostListSkeleton";
 
+
+
 function UserPostPages() {
   const [posts, setPosts] = useState<PostCardProps[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,7 +36,6 @@ function UserPostPages() {
         if (!articlesResponse.ok) {
           throw new Error("Failed to fetch articles");
         }
-
         const articlesData = await articlesResponse.json();
         const formattedArticles = (articlesData || []).map(
           (article: {
@@ -103,11 +104,12 @@ function UserPostPages() {
           <div className="flex-grow space-y-6">
             {posts.map((post) => (
               <div key={post.articleId}>
-                <PostCard {...posts} />
+                <PostCard {...post} />
                 <hr />
               </div>
             ))}
           </div>
+
         </div>
       </div>
     </div>

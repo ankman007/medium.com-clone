@@ -29,7 +29,7 @@ export const refreshAccessToken = async (): Promise<string | null> => {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to refresh token.");
+      console.log("Failed to refresh token.");
     }
 
     const data = await response.json();

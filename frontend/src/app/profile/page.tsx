@@ -40,15 +40,20 @@ function UserProfile() {
     <div className="bg-white text-black min-h-screen">
       <div className="container mx-auto px-4 lg:px-8 py-8">
         <div className="flex items-center gap-4 mb-8">
+        <div
+                style={{ position: "relative", width: "40px", height: "40px" }}
+              >
           <Image
             src='/dummy-profile.jpg'
-            alt="Profile"
+            alt="10"
             className="w-12 h-12 rounded-full"
-            width={40}
-            height={40}
-            unoptimized
+            style={{ objectFit: 'cover' }}
 
-          />
+            unoptimized
+            fill
+
+            />
+            </div>
 
           <h1 className="text-3xl font-bold">
             {userDetails?.name ? capitalize(userDetails?.name as string) : ""}

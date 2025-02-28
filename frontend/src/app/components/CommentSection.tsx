@@ -24,11 +24,12 @@ const CommentSection: React.FC<CommentProps> = ({ profilePicture, name, date, co
           <div className="relative w-10 h-10 mr-4">
             <Image
               src={profilePicture}
-              alt={`${name}'s profile picture`}
+              alt={`1`}
               layout="fill"
               objectFit="cover"
               className="rounded-full"
               unoptimized
+              fill
             />
           </div>
           <div>
@@ -58,12 +59,12 @@ const CommentSection: React.FC<CommentProps> = ({ profilePicture, name, date, co
       <div className="mt-2 flex space-x-4 text-gray-500">
         <div className="flex items-center space-x-1 cursor-pointer">
           <FontAwesomeIcon icon={faHeart} className="text-red-500" />
-          <span>20</span>
+          <span></span>
         </div>
 
         <div className="flex items-center space-x-1 cursor-pointer">
           <FontAwesomeIcon icon={faCommentAlt} className="text-gray-500" />
-          <span>10</span>
+          <span></span>
         </div>
 
         {/* <button className="focus:outline-none text-gray-600 hover:underline">Replies</button> */}

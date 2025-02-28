@@ -21,7 +21,6 @@ class CreateArticleView(APIView):
             logger.info(f"Request data: {request.data}")  
             logger.info(f"Uploaded file: {request.FILES.get('thumbnail')}")  
 
-            # Use request.FILES explicitly when handling file uploads
             serializer = ArticleSerializer(data=data, context={'request': request})
 
             if serializer.is_valid(raise_exception=True):
@@ -69,8 +68,15 @@ class ArticleListView(APIView):
     def get(self, request):
         try:
             articles = Article.objects.all()
-            serializer = ArticleSerializer(articles, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            serialized_articles = []
+
+            for article in articles:
+                serialized_article = ArticleSerializer(article).data
+                serialized_article['like_count'] = Like.objects.filter(article=article).count()
+                serialized_article['comments_count'] = Comment.objects.filter(article=article).count()
+                serialized_articles.append(serialized_article)
+
+            return Response(serialized_articles, status=status.HTTP_200_OK)
         except Exception as e:
             logger.error(f"Error fetching article list: {e}")
             return Response({"error": "Error fetching article list"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -141,8 +147,10 @@ class AddCommentView(APIView):
             if not comment_content:
                 return Response({"error": "Comment content is required"}, status=status.HTTP_400_BAD_REQUEST)
             
-            comment = Comment.objects.create(user=request.user, article=article, comment_content=comment_content)
-            serializer = CommentSerializer(comment)
+            comments = Comment.objects.create(user=request.user, article=article, comment_content=comment_content)
+            serializer = CommentSerializer(comments, context={'request': request})
+
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
             logger.error(f"Error adding comment to article ID {article_id}: {e}")
@@ -157,7 +165,7 @@ class ArticleCommentsView(APIView):
  
             comments = Comment.objects.filter(article=article)
 
-            serializer = CommentSerializer(comments, many=True)
+            serializer = CommentSerializer(comments, many=True, context={'request': request})  
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:

@@ -59,20 +59,19 @@ class CommentSerializer(serializers.ModelSerializer):
     user_name = serializers.CharField(source='user.name', read_only=True)
     user_id = serializers.CharField(source='user.id', read_only=True)
     user_email = serializers.EmailField(source='user.email', read_only=True)
-    author_avatar = serializers.SerializerMethodField()
+    user_avatar = serializers.ImageField(source='user.avatar', read_only=True)
 
+    def get_user_avatar(self, obj):
+        if obj.user and obj.user.avatar:
+            request = self.context.get('request')  # This should work, but make sure it's being passed
+            if request:
+                return request.build_absolute_uri(obj.user.avatar.url)
+            return obj.user.avatar.url
+        return None
     class Meta:
         model = Comment
-        fields = ['id', 'user_name', 'user_id', 'user_email', 'comment_content', 'created_at', 'article_id', 'author_avatar']
+        fields = ['id', 'user_name', 'user_id', 'user_email', 'comment_content', 'created_at', 'article_id', 'user_avatar']
         read_only_fields = ['created_at']
-
-    def get_author_avatar(self, obj):
-        if obj.author and obj.author.avatar:
-            request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri(obj.author.avatar.url)
-            return obj.author.avatar.url  
-        return None
 
 
 class LikeSerializer(serializers.ModelSerializer):

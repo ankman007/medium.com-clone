@@ -9,6 +9,7 @@ from .serializers import ArticleSerializer, CommentSerializer, ImageSerializer, 
 from .models import Article, Comment, Like, Tag
 from django.contrib.auth import get_user_model
 from rest_framework.parsers import MultiPartParser, FormParser
+from django.db.models import Q
 
 class CreateArticleView(APIView):
     permission_classes = [IsAuthenticated]
@@ -260,4 +261,18 @@ class TagsListView(APIView):
             logger.error(f"Error fetching tags: {e}")
             return Response({"error": "Error fetching tags"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-    
+
+class ArticleSearchView(APIView):
+    permission_classes = []
+    def get(self, request):
+        try: 
+            query = request.GET.get('q', '').strip()
+            if not query:
+                return Response({"error": "Query parameter is required"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            articles = Article.objects.filter(Q(title__icontains=query) | Q(content__icontains=query))
+            serializer = ArticleSerializer(articles, many=True, context={'request': request})
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"Error searching articles: {e}")
+            return Response({"error": "Error searching articles"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            

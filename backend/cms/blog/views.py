@@ -226,7 +226,7 @@ class GetPostsByUserView(APIView):
 class GetPostsByTagView(APIView):
     def get(self, request, id):
         try:
-            tag = get_object_or_404(Tag, name=id)
+            tag = get_object_or_404(Tag, id=id)
             articles = Article.objects.filter(tags=tag)
             serializer = ArticleSerializer(articles, many=True, context={'request': request})
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -261,7 +261,6 @@ class TagsListView(APIView):
             logger.error(f"Error fetching tags: {e}")
             return Response({"error": "Error fetching tags"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-
 class ArticleSearchView(APIView):
     permission_classes = []
     def get(self, request):

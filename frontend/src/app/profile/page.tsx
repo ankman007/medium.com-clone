@@ -44,7 +44,7 @@ function UserProfile() {
                 style={{ position: "relative", width: "40px", height: "40px" }}
               >
           <Image
-            src='/dummy-profile.jpg'
+            src={userDetails?.avatar || '/dummy-profile.jpg'}
             alt="10"
             className="w-12 h-12 rounded-full"
             style={{ objectFit: 'cover' }}

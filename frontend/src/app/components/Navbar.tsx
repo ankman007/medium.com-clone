@@ -116,7 +116,6 @@ const Navbar = () => {
                 <Image
                   src={userAvatar ||"/dummy-profile-1.jpg"}
                   alt="2"
-                  // style={{ objectFit: "cover" }} // Ensure the image covers the container
                   className="rounded-full object-cover cursor-pointer"
                   onClick={toggleDropdown}
                   unoptimized

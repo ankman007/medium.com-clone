@@ -25,9 +25,17 @@ export default function Home() {
     }
   }, [posts, recommendedTags]);
 
-  if (loading) return <PostPageSkeleton/>;
+  if (loading) return <PostPageSkeleton />;
 
-  const staffPicksArticles = posts.slice(-3).map((post) => ({
+  const sortedPosts = posts
+    .slice()
+    .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
+
+  const sortedPostsByLikes = posts
+    .slice()
+    .sort((a, b) => b.like_count - a.like_count);
+
+  const staffPicksArticles = sortedPostsByLikes.slice(0, 3).map((post) => ({
     articleId: post.id,
     authorId: post.author_id as unknown as number,
     authorName: post.author_name,
@@ -42,7 +50,7 @@ export default function Home() {
       {isLoggedIn ? (
         <div className="flex flex-col lg:flex-row px-4 lg:px-8 py-8 gap-8">
           <div className="flex-grow space-y-6">
-            {posts.map((post) => (
+            {sortedPosts.map((post) => (
               <div key={post.id}>
                 <PostCard
                   articleId={post.id}
@@ -63,7 +71,7 @@ export default function Home() {
             ))}
           </div>
           <div className="w-full lg:w-1/3 space-y-4">
-            <StaffPicksSection articles={staffPicksArticles}/>
+            <StaffPicksSection articles={staffPicksArticles} />
             <RecommendedTopics tags={recommendedTags} />
           </div>
         </div>

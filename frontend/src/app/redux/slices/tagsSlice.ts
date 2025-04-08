@@ -12,14 +12,12 @@ interface TagsState {
   error: string | null;
 }
 
-// Initial state
 const initialState: TagsState = {
   tags: [],
   loading: false,
   error: null,
 };
 
-// Async thunk to fetch tags
 export const fetchAllTags = createAsyncThunk<Tag[], string>(
   "tags/fetchAllTags",
   async (token, { rejectWithValue }) => {
@@ -38,7 +36,6 @@ export const fetchAllTags = createAsyncThunk<Tag[], string>(
   }
 );
 
-// Create slice
 const tagsSlice = createSlice({
   name: "tags",
   initialState,

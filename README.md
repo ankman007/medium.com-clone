@@ -14,7 +14,7 @@ DevFlow CMS is web content management system that allows for hassle-free way to 
 - Redux
 - Tailwind
 
-## To contribute to this project
+## To set up this project
 
 ### For Backend
 1. cd into \backend directory

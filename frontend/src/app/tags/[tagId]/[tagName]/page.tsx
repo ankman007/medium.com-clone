@@ -14,7 +14,10 @@ function TagsPages() {
   const [posts, setPosts] = useState<PostCardProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
   const { tagName, tagId } = useParams();
+  const decodedTagName = decodeURIComponent(tagName as string);
+
   const token = useSelector((state: RootState) => state.auth.accessToken);
 
   useEffect(() => {
@@ -89,16 +92,23 @@ function TagsPages() {
     <div className="bg-white text-black min-h-screen">
       <div className="container mx-auto px-4 lg:px-8 py-8">
         <h1 className="text-3xl font-bold mb-8">
-          {tagName ? capitalize(tagName as string) : ""}
+          {decodedTagName ? capitalize(decodedTagName) : ""}
         </h1>
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="flex-grow space-y-6">
-            {posts.map((post) => (
-              <div key={post.articleId}>
-                <PostCard {...post} />
-                <hr />
+            {posts.length > 0 ? (
+              posts.map((post) => (
+                <div key={post.articleId}>
+                  <PostCard {...post} />
+                  <hr />
+                </div>
+              ))
+            ) : (
+              <div className="text-gray-600 text-lg text-center py-8">
+                No posts found for{" "}
+                <strong>{capitalize(decodedTagName)}</strong>.
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>

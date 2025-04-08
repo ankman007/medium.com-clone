@@ -12,8 +12,8 @@ const Login = () => {
   });
 
   const demoLoginCredentials = {
-    email: "testuser3090@gmail.com",
-    password: "TESTtest@123$$#",
+    email: "cnepal@gmail.com",
+    password: "NEPal123",
   };
 
   const [loading, setLoading] = useState(false);
@@ -119,23 +119,12 @@ const Login = () => {
           </button>
         </form>
 
-        {/* Demo Login Button */}
         <button
           onClick={handleDemoLogin}
           className="w-full p-3 mt-4 bg-gray-300 text-black font-bold rounded-lg hover:bg-gray-400 transition"
         >
           Use Demo Login
         </button>
-
-        {/* <div className="text-center text-gray-500">
-          <p>
-            <Link
-              href="/sign-up"
-              className="text-black font-bold text-inherit no-underline flex items-center gap-2 hover:text-white focus:text-white hover:no-underline focus:no-underline space-x-2" > 
-              Sign Up
-            </Link>
-          </p>
-        </div> */}
       </div>
     </div>
   );

@@ -26,7 +26,6 @@ const Signup = () => {
     if (!/[A-Z]/.test(password)) errors.push("Password must contain at least one uppercase letter.");
     if (!/[a-z]/.test(password)) errors.push("Password must contain at least one lowercase letter.");
     if (!/\d/.test(password)) errors.push("Password must contain at least one number.");
-    if (!/[@$!%*?&]/.test(password)) errors.push("Password must contain at least one special character.");
     if (/\s/.test(password)) errors.push("Password cannot contain spaces.");
 
     return errors;
@@ -78,11 +77,11 @@ const Signup = () => {
       formDataToSend.append("password", formData.password);
       formDataToSend.append("password2", formData.password2);
       formDataToSend.append("tc", formData.tc.toString());
-      formDataToSend.append("avatar", avatar); // Add the avatar to the form data
+      formDataToSend.append("avatar", avatar);
 
       const response = await fetchWithAuth("http://localhost:8000/user/register/", {
         method: "POST",
-        body: formDataToSend, // Send form data
+        body: formDataToSend, 
       });
 
       const data = await response.json();

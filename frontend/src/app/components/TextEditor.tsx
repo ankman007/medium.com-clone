@@ -14,11 +14,7 @@ import CodeBlock from "@tiptap/extension-code-block";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import TextAlign from "@tiptap/extension-text-align";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
-import { apiBaseURL } from "../../../constant/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { fetchWithAuth } from "../../../utils";
 import BlogPublishSkeleton from "../skeletons/BlogPublishSkeleton";
 import {
   faBold,
@@ -38,9 +34,31 @@ import {
   faUndo,
   faRedo,
 } from "@fortawesome/free-solid-svg-icons";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchWithAuth } from "../../../utils";
+import { apiBaseURL } from "../../../constant/api";
+import { AppDispatch, RootState } from "../redux/store";
+import { setUserPosts } from "../redux/slices/userPostSlice";
+
+const fetchUserPosts = async (token: string, userId: string) => {
+  try {
+    const response = await fetchWithAuth(`${apiBaseURL}/articles/users/${userId}/`, {
+      method: "GET",
+      headers: { Authorization: token ? `Bearer ${token}` : "" },
+    });
+    if (!response.ok) throw new Error("Failed to get user's articles.");
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching user posts:", error);
+    return null;
+  }
+};
 
 export default function BlogEditor() {
+  const dispatch = useDispatch<AppDispatch>();
   const token = useSelector((state: RootState) => state.auth.accessToken);
+  const userId = useSelector((state: RootState) => state.user.id);
+
   const [title, setTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
   const [thumbnail, setThumbnail] = useState<File | null>(null); 
@@ -67,8 +85,8 @@ export default function BlogEditor() {
   const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
-      console.log("Selected file:", file); // Debugging log
-      console.log("File type:", file.type); // Check MIME type
+      console.log("Selected file:", file);
+      console.log("File type:", file.type);
   
       setThumbnail(file);
   
@@ -81,7 +99,7 @@ export default function BlogEditor() {
   };
 
   const handleSubmit = async () => {
-    if (!editor) return;
+    if (!editor) return; 
     const tags = 1;
   
     try {
@@ -103,14 +121,21 @@ export default function BlogEditor() {
       });
   
       if (!response.ok) {
-        const errorText = await response.text(); // Read response as text for debugging
+        const errorText = await response.text();
         console.error("Error:", errorText);
         return;
       }
   
-      const data = await response.json(); // Read JSON only once
+      const data = await response.json();
       console.log("Server Response:", data);
       
+      if (token && userId) {
+        const updatedPosts = await fetchUserPosts(token, userId);
+        if (updatedPosts) {
+          dispatch(setUserPosts(updatedPosts));
+        }
+      }
+
       const { id, seo_slug } = data;
       const newPath = `/post/${id}/${seo_slug}/`;
       window.location.href = newPath;
@@ -140,7 +165,6 @@ export default function BlogEditor() {
         value={seoDescription}
         onChange={(e) => setSeoDescription(e.target.value)}
       />
-      {/* Thumbnail upload section */}
       <div className="mb-4">
         <input
           type="file"

@@ -7,6 +7,9 @@ import {
   faCommentAlt,
   faBookmark,
   faFlag,
+  faPenToSquare,
+  faTrash,
+  faLink,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { PostCardProps } from "../../../constant/types";
@@ -21,12 +24,38 @@ const PostCard: React.FC<PostCardProps> = ({
   updatedAt,
   likes = 0,
   comments = 0,
-  isBookmarked = false,
   seoSlug,
   articleId,
+  isBookmarked = false,
+  isOwnPost = false,
 }) => {
   return (
-    <div className="bg-white border rounded-lg p-4 mb-6">
+    <div className="bg-white border rounded-lg p-4 mb-6 relative">
+      {isOwnPost && (
+        <div className="flex space-x-2 mb-3 justify-end gap-2">
+          <button onClick={() => console.log("Link share logic here")}>
+          <FontAwesomeIcon
+              icon={faLink}
+              className="text-green-600 hover:text-green-700 cursor-pointer"
+              title="Edit"
+            />
+          </button>
+          <Link href={`/edit/${articleId}`}>
+            <FontAwesomeIcon
+              icon={faPenToSquare}
+              className="text-blue-500 hover:text-blue-600 cursor-pointer"
+              title="Edit"
+            />
+          </Link>
+          <button onClick={() => console.log("Delete logic here")}>
+            <FontAwesomeIcon
+              icon={faTrash}
+              className="text-red-600 hover:text-red-700 cursor-pointer"
+              title="Delete"
+            />
+          </button>
+        </div>
+      )}
       <div className="flex flex-col md:flex-row">
         <div className="flex flex-col justify-between flex-1">
           <div className="flex items-center space-x-3">
@@ -75,18 +104,21 @@ const PostCard: React.FC<PostCardProps> = ({
                 <span>{comments}</span>
               </div>
             </div>
-
-            <div className="flex items-center space-x-4">
-              <div className="cursor-pointer">
-                <FontAwesomeIcon
-                  icon={faBookmark}
-                  className={isBookmarked ? "text-yellow-500" : "text-gray-500"}
-                />
+            {!isOwnPost && (
+              <div className="flex items-center space-x-4">
+                <div className="cursor-pointer">
+                  <FontAwesomeIcon
+                    icon={faBookmark}
+                    className={
+                      isBookmarked ? "text-yellow-500" : "text-gray-500"
+                    }
+                  />
+                </div>
+                <div className="cursor-pointer">
+                  <FontAwesomeIcon icon={faFlag} className="text-gray-500" />
+                </div>
               </div>
-              <div className="cursor-pointer">
-                <FontAwesomeIcon icon={faFlag} className="text-gray-500" />
-              </div>
-            </div>
+            )}
           </div>
         </div>
 

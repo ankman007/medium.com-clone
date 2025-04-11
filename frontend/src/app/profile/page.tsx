@@ -84,6 +84,7 @@ function UserProfile() {
                   comments={0}
                   isBookmarked={false}
                   seoSlug={post.seo_slug}
+                  isOwnPost={true}
                 /> 
                 <hr />
               </div>

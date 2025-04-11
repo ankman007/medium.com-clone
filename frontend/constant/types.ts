@@ -14,6 +14,7 @@ export type PostCardProps = BasePostProps & {
   likes?: number;
   comments?: number;
   isBookmarked?: boolean;
+  isOwnPost?: boolean;
 }
 
 export type PostDetailProps = PostCardProps & {

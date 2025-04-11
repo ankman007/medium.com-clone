@@ -18,16 +18,20 @@ import { RootState } from "../redux/store";
 import { clearTokens } from "../redux/slices/authSlice";
 import { clearUserPosts } from "../redux/slices/userPostSlice";
 import { clearUserDetails } from "../redux/slices/userSlice";
+import { useRouter, usePathname } from "next/navigation";
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const dispatch = useDispatch();
+  const pathname = usePathname();
+  const router = useRouter();
 
   const accessToken = useSelector((state: RootState) => state.auth.accessToken);
   const userAvatar = useSelector((state: RootState) => state.user.avatar);
-
+  
   const isLoggedIn = !!accessToken;
 
   useEffect(() => {
@@ -37,6 +41,12 @@ const Navbar = () => {
       setIsLoading(false);
     }
   }, [accessToken]);
+
+  useEffect(() => {
+    if (!pathname.startsWith("/search-results")) {
+      setSearchQuery("");
+    }
+  }, [pathname]);
 
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
@@ -68,6 +78,12 @@ const Navbar = () => {
     };
   }, [isDropdownOpen]);
 
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && searchQuery.trim() !== "") {
+      router.push(`/search-results?query=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
   if (isLoading) {
     return <div></div>;
   }
@@ -87,6 +103,9 @@ const Navbar = () => {
               type="text"
               className="rounded-full px-4 py-2 w-64 bg-gray-100 focus:outline-none focus:bg-gray-200 placeholder-gray-500"
               placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleSearch}
             />
           </div>
         )}
@@ -114,7 +133,7 @@ const Navbar = () => {
                 style={{ position: "relative", width: "40px", height: "40px" }}
               >
                 <Image
-                  src={userAvatar ||"/dummy-profile-1.jpg"}
+                  src={userAvatar || "/dummy-profile-1.jpg"}
                   alt="2"
                   className="rounded-full object-cover cursor-pointer"
                   onClick={toggleDropdown}

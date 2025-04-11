@@ -153,9 +153,10 @@ const PostPage: React.FC<PostDetailProps> = ({
   };
 
   const handleToggleLike = async () => {
+    if (isCurrentUsersPost) return;
     const response = await toggleLike(token, articleId);
     if (response) {
-      setLikeCount(isLiked ? likeCount - 1 : likeCount + 1);
+      setLikeCount(isLiked ? likeCount! - 1 : likeCount! + 1);
       setIsLiked(!isLiked);
     }
   };

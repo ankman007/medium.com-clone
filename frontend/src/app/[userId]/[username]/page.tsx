@@ -9,17 +9,27 @@ import { RootState } from "@/app/redux/store";
 import { fetchWithAuth } from "../../../../utils";
 import withAuth from "@/app/hoc/withAuth";
 import PageListSkeleton from "@/app/skeletons/PostListSkeleton";
-
-
+import { useRouter } from "next/navigation";
 
 function UserPostPages() {
+  const router = useRouter();
   const [posts, setPosts] = useState<PostCardProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { userId, username } = useParams();
   const token = useSelector((state: RootState) => state.auth.accessToken);
 
+  const currentUserDetails = useSelector((state: RootState) => state.user);
+  const isCurrentUsersPost = Number(currentUserDetails.id) == Number(userId);
+  
   useEffect(() => {
+    if (isCurrentUsersPost) {
+      router.push(`/profile`);
+    }
+  }, [isCurrentUsersPost, router]);
+
+  useEffect(() => {
+    if (isCurrentUsersPost) return; 
     const fetchData = async () => {
       try {
         setLoading(true);
@@ -77,7 +87,7 @@ function UserPostPages() {
     };
 
     fetchData();
-  }, [username, userId, token]);
+  }, [username, userId, token, isCurrentUsersPost]);
 
   if (loading) {
     return <PageListSkeleton />;
@@ -86,16 +96,17 @@ function UserPostPages() {
   if (error) {
     return <div>{error}</div>;
   }
+  const decodedName = decodeURIComponent(username as string);
 
   return (
     <div className="bg-white text-black min-h-screen">
       <div className="container mx-auto px-4 lg:px-8 py-8">
         <h1 className="text-3xl font-bold mb-8">
-          {username && typeof username === "string" ? capitalize(username) : ""}
+          {username && typeof username === "string" ? capitalize(decodedName) : ""}
           <span className="block text-lg font-normal text-gray-500 mt-2">
             All posts from{" "}
             {username && typeof username === "string"
-              ? capitalize(username)
+              ? capitalize(decodedName) 
               : ""}
             .
           </span>

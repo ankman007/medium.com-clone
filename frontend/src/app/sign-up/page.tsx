@@ -209,14 +209,16 @@ const Signup = () => {
         </form>
 
         <div className="text-center text-gray-500">
-          <p>
-            <Link
-              href="/login"
-              className="text-black font-bold text-inherit no-underline flex items-center gap-2 hover:text-white focus:text-white hover:no-underline focus:no-underline space-x-2">
-              Already have an account? Login
-            </Link>
-          </p>
-        </div>
+  <p>
+    <Link
+      href="/login"
+      className="text-gray-700 font-semibold no-underline hover:text-black hover:no-underline transition-colors duration-200"
+    >
+      Already have an account? <span className="underline">Login</span>
+    </Link>
+  </p>
+</div>
+
       </div>
     </div>
   );

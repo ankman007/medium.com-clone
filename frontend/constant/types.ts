@@ -44,6 +44,23 @@ export type LayoutProps = {
   children: React.ReactNode;
 }
 
+export type RawArticle = {
+  id: number;
+  author_name: string;
+  author_id: number | string;
+  author_email: string;
+  title: string;
+  content: string;
+  seo_description: string;
+  created_at: string;
+  updated_at: string;
+  seo_slug: string;
+  tags: number[];
+  like_count: number;
+  thumbnail: string;
+  author_avatar: string | null;
+};
+
 export type UserDetailsProps = {
   id: number;
   email: string;

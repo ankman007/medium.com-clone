@@ -11,20 +11,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  reactStrictMode: process.env.NODE_ENV !== "production", // Enable only in development
-  experimental: {
-    serverActions: {
-      bodySizeLimit: undefined,
-      allowedOrigins: undefined,
-    },
-    serverComponentsExternalPackages: [
-      "@fortawesome",
-      "@tiptap",
-      "react-draft-wysiwyg",
-    ],
-  },
+  reactStrictMode: process.env.NODE_ENV !== "production",
+  serverExternalPackages: [
+    "@fortawesome",
+    "@tiptap",
+    "react-draft-wysiwyg",
+  ],
   compiler: {
-    removeConsole: process.env.NODE_ENV === "production", // Removes console logs in production
+    removeConsole: process.env.NODE_ENV === "production",
   },
 };
 

@@ -1,6 +1,6 @@
 export type BasePostProps = {
   articleId: number;
-  authorId: number;
+  authorId: number | string;
   authorName: string;
   authorImage: string;
   title: string;
@@ -72,15 +72,17 @@ export type UserDetailsProps = {
 export type UserPostProps = {
   id: number;
   author_name: string;
-  author_id: number;
+  author_id: number | string;
   author_email: string;
   title: string;
   content: string;
   seo_description: string;
   updated_at: string;
+  created_at: string;
   seo_slug: string;
-  author_avatar: string
-  thumbnail: string
+  like_count: number;
+  author_avatar: string;
+  thumbnail: string;
 };
 
 export type UserPostPropsArray = UserPostProps[];

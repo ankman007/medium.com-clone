@@ -101,7 +101,6 @@ const PostPage: React.FC<PostDetailProps> = ({
   authorName,
   updatedAt,
   likes,
-  comments,
   isBookmarked,
   content,
   thumbnailImage = "/thumbnail.jpg",

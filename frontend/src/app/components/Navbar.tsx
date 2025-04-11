@@ -43,6 +43,7 @@ const Navbar = () => {
   }, [accessToken]);
 
   useEffect(() => {
+    setIsDropdownOpen(false);
     if (!pathname.startsWith("/search-results")) {
       setSearchQuery("");
     }

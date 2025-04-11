@@ -4,10 +4,10 @@ import PostCard from "../components/PostCard";
 import { formatDate } from "../../../utils";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
-import { PostCardProps } from "../../../constant/types"; 
+import { PostCardProps } from "../../../constant/types";
 import { fetchWithAuth } from "../../../utils";
 import withAuth from "../hoc/withAuth";
-import PageListSkeleton from "@/app/skeletons/PostListSkeleton"
+import PageListSkeleton from "@/app/skeletons/PostListSkeleton";
 
 function RecommendedPostsPage() {
   const [posts, setPosts] = useState<PostCardProps[]>([]);
@@ -35,7 +35,7 @@ function RecommendedPostsPage() {
 
         const articlesData = await articlesResponse.json();
 
-        const formattedArticles: PostCardProps[] = articlesData.map(
+        const filteredAndSortedArticles = articlesData.filter(
           (article: {
             id: number;
             author_id: number;
@@ -48,22 +48,39 @@ function RecommendedPostsPage() {
             seo_slug: string;
             author_avatar: string;
             thumbnail: string;
-          }) => ({
-            articleId: article.id,
-            authorId: Number(article.author_id),
-            authorName: article.author_name,
-            authorEmail: article.author_email,
-            title: article.title,
-            description: article.seo_description,
-            updatedAt: formatDate(article.updated_at),
-            likes: article.like_count,
-            comments: 0,
-            isBookmarked: false,
-            authorImage: article.author_avatar || '/dummy-profile.jpg',
-            image: article.thumbnail || '/thumbnail.jpg',
-            seoSlug: article.seo_slug,
-          })
+          }) => article.like_count > 1
         );
+
+        const formattedArticles: PostCardProps[] =
+          filteredAndSortedArticles.map(
+            (article: {
+              id: number;
+              author_id: number;
+              author_name: string;
+              author_email: string;
+              title: string;
+              seo_description: string;
+              updated_at: string;
+              like_count: number;
+              seo_slug: string;
+              author_avatar: string;
+              thumbnail: string;
+            }) => ({
+              articleId: article.id,
+              authorId: Number(article.author_id),
+              authorName: article.author_name,
+              authorEmail: article.author_email,
+              title: article.title,
+              description: article.seo_description,
+              updatedAt: formatDate(article.updated_at),
+              likes: article.like_count,
+              comments: 0,
+              isBookmarked: false,
+              authorImage: article.author_avatar || "/dummy-profile.jpg",
+              image: article.thumbnail || "/thumbnail.jpg",
+              seoSlug: article.seo_slug,
+            })
+          );
 
         setPosts(formattedArticles);
       } catch (error) {

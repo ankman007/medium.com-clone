@@ -173,6 +173,7 @@ export default function BlogEditor() {
           className="mb-2"
         />
         {thumbnailPreview && (
+          // eslint-disable-next-line @next/next/no-img-element
           <img src={thumbnailPreview} alt="Thumbnail Preview" className="w-32 h-32 object-cover" />
         )}
       </div>

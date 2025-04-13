@@ -71,3 +71,6 @@ venv/
 # Environment Files
 .env
 .env.local
+
+# static files
+/backend/cms/staticfiles/

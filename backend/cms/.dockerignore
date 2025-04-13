@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+.dockerignore
+.django-debug.log
+media/
+staticfiles/
+*.sqlite3
+.env
+.env.*

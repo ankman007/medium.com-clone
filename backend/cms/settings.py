@@ -1,7 +1,6 @@
 
 from pathlib import Path
 from os import getenv, path 
-from django.core.management.utils import get_random_secret_key
 import dotenv
 from datetime import timedelta
 import os 
@@ -12,23 +11,16 @@ dotenv_file = BASE_DIR / '.env.local'
 if path.isfile(dotenv_file):
     dotenv.load_dotenv(dotenv_file)
     
-SECRET_KEY = getenv('DJANGO_SECRET_KEY', get_random_secret_key())
-DEBUG = getenv('DEBUG', 'False') == 'True'
+SECRET_KEY = "hello_there"
+DEBUG = 'True'
 
-ALLOWED_HOSTS = getenv(
-    'DJANGO_ALLOWED_HOSTS',
-    '127.0.0.1,localhost',
-).split(',')
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
-DB_NAME = getenv('DB_NAME')
-DB_USERNAME = getenv('DB_USERNAME')
-DB_PASSWORD = getenv('PASSWORD')
-DB_HOST = getenv('HOST')
-DB_PORT = getenv('PORT')
-
-EMAIL_USER = getenv('EMAIL_USER')
-EMAIL_PASSWORD = getenv('EMAIL_PASSWORD')
-EMAIL_FROM = getenv('EMAIL_FROM')
+DB_NAME = "postgres"
+DB_USERNAME = "postgres"
+DB_PASSWORD = "admin"
+DB_HOST = "db"
+DB_PORT = 5432
 
 INSTALLED_APPS = [
     'django.contrib.admin',

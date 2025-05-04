@@ -62,6 +62,7 @@ function RecommendedPostsPage() {
               seo_description: string;
               updated_at: string;
               like_count: number;
+              comments_count: number;
               seo_slug: string;
               author_avatar: string;
               thumbnail: string;
@@ -74,7 +75,7 @@ function RecommendedPostsPage() {
               description: article.seo_description,
               updatedAt: formatDate(article.updated_at),
               likes: article.like_count,
-              comments: 0,
+              comments: article.comments_count,
               isBookmarked: false,
               authorImage: article.author_avatar || "/dummy-profile.jpg",
               image: article.thumbnail || "/thumbnail.jpg",

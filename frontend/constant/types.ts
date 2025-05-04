@@ -58,6 +58,7 @@ export type RawArticle = {
   seo_slug: string;
   tags: number[];
   like_count: number;
+  comments_count: number;
   thumbnail: string;
   author_avatar: string | null;
 };
@@ -69,20 +70,23 @@ export type UserDetailsProps = {
   avatar: string;
 };
 
-export type UserPostProps = {
+export interface UserPostProps {
   id: number;
   author_name: string;
-  author_id: number | string;
+  author_id: string | number;
   author_email: string;
   title: string;
   content: string;
   seo_description: string;
-  updated_at: string;
   created_at: string;
+  updated_at: string;
   seo_slug: string;
+  tags?: number[]; 
   like_count: number;
-  author_avatar: string;
+  comments_count?: number; 
   thumbnail: string;
-};
+  author_avatar: string;
+}
 
 export type UserPostPropsArray = UserPostProps[];
+

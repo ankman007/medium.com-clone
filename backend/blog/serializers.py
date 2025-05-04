@@ -10,6 +10,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     seo_slug = serializers.ReadOnlyField()
     tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
     like_count = serializers.SerializerMethodField()
+    comments_count = serializers.SerializerMethodField()
     thumbnail = serializers.ImageField(required=False)
 
     class Meta:
@@ -17,12 +18,15 @@ class ArticleSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'author_name', 'author_id', 'author_email', 'title', 'content',
             'seo_description', 'created_at', 'updated_at', 'seo_slug', 'tags',
-            'like_count', 'thumbnail', 'author_avatar'
+            'like_count', 'comments_count', 'thumbnail', 'author_avatar'
         ]
         read_only_fields = ['created_at', 'updated_at']
 
     def get_like_count(self, obj):
         return Like.objects.filter(article=obj).count()
+    
+    def get_comments_count(self, obj):
+        return Comment.objects.filter(article=obj).count()
 
     def get_thumbnail(self, obj):
         if obj.thumbnail:

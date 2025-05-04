@@ -14,7 +14,7 @@ interface Post {
   seo_slug: string;
   tags: number[];
   like_count: number;
-  comment_count: number;
+  comments_count: number;
   thumbnail: string;
   author_avatar: string;
 }
@@ -39,7 +39,8 @@ export const fetchAllPosts = createAsyncThunk<Post[], string>(
         headers: { Authorization: token ? `Bearer ${token}` : "" },
       });
       if (!response.ok) throw new Error("Failed to fetch posts");
-      return await response.json();
+      const data = await response.json();
+      return data
     } catch (error) {
       if (error instanceof Error) {
         return rejectWithValue(error.message);

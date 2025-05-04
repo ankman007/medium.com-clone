@@ -15,10 +15,13 @@ const getSearchResult = async (query: string, accessToken: string) => {
   if (query.trim() === "") return [];
 
   try {
-    const response = await fetchWithAuth(`${apiBaseURL}/articles/search/?q=${query}`, {
-      method: "GET",
-      headers: { Authorization: accessToken ? `Bearer ${accessToken}` : "" },
-    });
+    const response = await fetchWithAuth(
+      `${apiBaseURL}/articles/search/?q=${query}`,
+      {
+        method: "GET",
+        headers: { Authorization: accessToken ? `Bearer ${accessToken}` : "" },
+      }
+    );
     if (!response.ok) throw new Error("Search failed.");
     return await response.json();
   } catch (error) {
@@ -44,21 +47,27 @@ function SearchResultsPage() {
 
       try {
         const searchData = await getSearchResult(query, token);
-        const formattedPosts = (searchData || []).map((article: RawArticle) => ({
-          authorId: article.author_id,
-          articleId: article.id,
-          authorName: article.author_name,
-          authorEmail: article.author_email,
-          title: article.title,
-          description: article.seo_description,
-          updatedAt: formatDate(article.updated_at),
-          likes: article.like_count,
-          comments: 0,
-          isBookmarked: false,
-          authorImage: article.author_avatar || "/dummy-profile.jpg",
-          thumbnailImage: article.thumbnail || "/thumbnail.jpg",
-          seoSlug: article.seo_slug,
-        }));
+        const formattedPosts = (searchData || [])
+          .map((article: RawArticle) => ({
+            authorId: article.author_id,
+            articleId: article.id,
+            authorName: article.author_name,
+            authorEmail: article.author_email,
+            title: article.title,
+            description: article.seo_description,
+            updatedAt: formatDate(article.updated_at),
+            likes: article.like_count,
+            comments: article.comments_count,
+            isBookmarked: false,
+            authorImage: article.author_avatar || "/dummy-profile.jpg",
+            thumbnailImage: article.thumbnail || "/thumbnail.jpg",
+            seoSlug: article.seo_slug,
+          }))
+          .sort((a, b) => {
+            if (b.likes !== a.likes) return b.likes - a.likes;
+            return (b.comments ?? 0) - (a.comments ?? 0);
+          });
+
         setPosts(formattedPosts);
       } catch (err) {
         setError(`Failed to load search results. ${err}`);
@@ -77,7 +86,8 @@ function SearchResultsPage() {
     <div className="bg-white text-black min-h-screen">
       <div className="container mx-auto px-4 lg:px-8 py-8">
         <h1 className="text-3xl font-bold mb-8">
-          Search results for: <span className="italic">{capitalize(query)}</span>
+          Search results for:{" "}
+          <span className="italic">{capitalize(query)}</span>
         </h1>
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="flex-grow space-y-6">

@@ -5,11 +5,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 import withAuth from "@/app/hoc/withAuth";
 import { formatDate, capitalize } from "../../../utils";
-import { UserDetailsProps, UserPostPropsArray } from "../../../constant/types";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import PageListSkeleton from "@/app/skeletons/PostListSkeleton";
+import { UserDetailsProps, UserPostPropsArray  } from "../../../constant/types";
 
 function UserProfile() {
   const [loading, setLoading] = useState(true);
@@ -80,8 +80,8 @@ function UserProfile() {
                   title={post.title}
                   description={post.seo_description}
                   updatedAt={formatDate(post.updated_at)}
-                  likes={0}
-                  comments={0}
+                  likes={post.like_count}
+                  comments={post.comments_count}
                   isBookmarked={false}
                   seoSlug={post.seo_slug}
                   isOwnPost={true}

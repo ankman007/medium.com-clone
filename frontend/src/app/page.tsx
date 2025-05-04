@@ -39,7 +39,7 @@ export default function Home() {
     articleId: post.id,
     authorId: post.author_id as unknown as number,
     authorName: post.author_name,
-    authorImage: post.thumbnail || '/dummy-profile.jpg',
+    authorImage: post.author_avatar || '/dummy-profile.jpg',
     title: post.title,
     updatedAt: formatDate(post.updated_at),
     seoSlug: post.seo_slug,
@@ -63,7 +63,7 @@ export default function Home() {
                   likes={post.like_count}
                   authorImage={post.author_avatar || '/dummy-profile.jpg'}
                   thumbnailImage={post.thumbnail || '/thumbnail.jpg'}
-                  comments={post.comment_count}
+                  comments={post.comments_count}
                   isBookmarked={false}
                 />
                 <hr />

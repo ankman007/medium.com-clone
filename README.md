@@ -1,9 +1,5 @@
 # Project Description 
 DevFlow CMS is web content management system that allows for hassle-free way to publish and manage content.
-  
-[Project Link](https://devflow-cms.vercel.app/)
-
-[Swagger API Documentation](http://localhost:8000/swagger/)
 
 ## Technology used
 
